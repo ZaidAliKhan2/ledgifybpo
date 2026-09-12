@@ -179,7 +179,7 @@ export const services = [
       "Keep routine HR tasks moving",
     ],
   },
-];
+] as const;
 export const industries = [
   {
     name: "E-commerce",

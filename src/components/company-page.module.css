@@ -1,0 +1,176 @@
+.hero {
+  padding-block: 80px;
+  background: var(--neutral-light);
+}
+
+.hero h1 {
+  max-width: 900px;
+  margin-top: 18px;
+  font-size: clamp(38px, 4.5vw, 62px);
+  letter-spacing: -0.04em;
+}
+
+.description {
+  max-width: 720px;
+  margin-top: 20px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.section[data-tone="muted"] {
+  background: var(--neutral-light);
+}
+
+.heading {
+  max-width: 800px;
+  margin-bottom: 36px;
+}
+
+.heading h2 {
+  margin-top: 14px;
+}
+
+.columns,
+.cards {
+  display: grid;
+  gap: 24px;
+}
+
+.columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cards {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.panel {
+  min-width: 0;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--background);
+}
+
+.panel h3,
+.steps h3 {
+  font-size: 19px;
+  line-height: 1.4;
+  letter-spacing: -0.4px;
+}
+
+.panel p,
+.steps p,
+.prose p {
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.prose {
+  max-width: 760px;
+}
+
+.prose p:first-child {
+  margin-top: 0;
+}
+
+.prose a,
+.panel a {
+  margin-top: 22px;
+}
+
+.steps {
+  display: grid;
+  gap: 24px;
+  margin: 0;
+  padding-left: 26px;
+}
+
+.steps li {
+  padding: 0 0 22px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.steps li::marker {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.steps p {
+  max-width: 780px;
+}
+
+.cta {
+  background: var(--accent-deep);
+  color: var(--background);
+}
+
+.ctaInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.ctaInner > div {
+  max-width: 730px;
+  min-width: 0;
+}
+
+.ctaInner h2 {
+  margin-top: 14px;
+}
+
+.ctaInner :global(.eyebrow),
+.cta .description {
+  color: rgb(255 255 255 / 75%);
+}
+
+.ctaInner > button {
+  flex-shrink: 0;
+  white-space: normal;
+  background: var(--background);
+  color: var(--accent-deep);
+}
+
+.ctaInner > button:hover {
+  background: var(--neutral-light);
+}
+
+@media (max-width: 1100px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ctaInner {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding-block: 55px;
+  }
+
+  .columns,
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    padding: 24px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+
+  .ctaInner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+  }
+}

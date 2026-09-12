@@ -68,9 +68,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [serviceError, setServiceError] = useState("");
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
-  const [hoveredServiceSlug, setHoveredServiceSlug] = useState(
-    services[0].slug,
-  );
+  const [hoveredServiceSlug, setHoveredServiceSlug] = useState<
+    (typeof services)[number]["slug"]
+  >(services[0].slug);
   const [industriesDropdownOpen, setIndustriesDropdownOpen] = useState(false);
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
@@ -147,8 +147,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const links = [
     ["Services", "/#services"],
     ["Industries", "/#industries"],
-    ["Why LedgifyBPO", "/#why-ledgify"],
-    ["About Us", "/#about"],
+    ["Why LedgifyBPO", "/why-ledgify-bpo"],
+    ["About Us", "/about"],
   ];
   return (
     <ConsultationContext.Provider value={open}>
@@ -179,7 +179,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                         {services.map((service) => (
                           <Link
                             key={service.slug}
-                            href="/#services"
+                            href={`/services/${service.slug}`}
                             onMouseEnter={() =>
                               setHoveredServiceSlug(service.slug)
                             }
@@ -297,7 +297,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                         {services.map((service) => (
                           <Link
                             key={service.slug}
-                            href="/#services"
+                            href={`/services/${service.slug}`}
                             onClick={() => setMobileOpen(false)}
                           >
                             {service.name}
@@ -403,6 +403,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <div>
               <p className="footer-heading">Explore</p>
               <Link href="/about">About us</Link>
+              <Link href="/why-ledgify-bpo">Why LedgifyBPO</Link>
               <Link href="/#services">Services</Link>
               <Link href="/industries">Industries</Link>
               <Link href="/careers">Careers</Link>
@@ -410,13 +411,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
             <div>
               <p className="footer-heading">Services</p>
-              <Link href="/services/bookkeeping">Bookkeeping</Link>
-              <Link href="/services/accounting">Accounting</Link>
-              <Link href="/services/tax">Tax</Link>
-              <Link href="/services/advisory">Advisory</Link>
-              <Link href="/services/remote-hr-services">
-                Remote HR Services
-              </Link>
+              {services.map((service) => (
+                <Link key={service.slug} href={`/services/${service.slug}`}>
+                  {service.name}
+                </Link>
+              ))}
             </div>
 
             <div>

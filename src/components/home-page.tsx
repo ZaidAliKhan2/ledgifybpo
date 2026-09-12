@@ -617,28 +617,32 @@ export function IndustryCards() {
   );
 }
 
-export function FounderCards() {
+export function FounderCards({ raised = false }: { raised?: boolean }) {
   return (
-    <div className="founder-grid" id="founders">
+    <div className={`founder-grid${raised ? " founder-grid-raised" : ""}`} id="founders">
       {[1, 2].map((number) => (
         <article key={number} className="founder-card">
           <div className="founder-portrait">
-            <span className="founder-index" aria-hidden="true">
-              0{number}
-            </span>
+            {!raised && (
+              <span className="founder-index" aria-hidden="true">
+                0{number}
+              </span>
+            )}
             <Image
               src={
                 number === 1
-                  ? "/images/founder-naveed.webp"
-                  : "/images/founder-saud.webp"
+                  ? "/images/founder-1-name.png"
+                  : "/images/founder-2-name.png"
               }
               alt={`${number === 1 ? "Naveed" : "Saud"}, Co-Founder and ${number === 1 ? "CEO" : "COO"} of LedgifyBPO`}
               fill
-              sizes="(max-width: 480px) 86vw, (max-width: 767px) 44vw, 460px"
+              sizes={raised
+                ? "160px"
+                : "(max-width: 480px) 86vw, (max-width: 767px) 44vw, 460px"}
             />
           </div>
           <div className="founder-information">
-            <p className="founder-kicker">LEADERSHIP</p>
+            {!raised && <p className="founder-kicker">LEADERSHIP</p>}
             <h3>{number == 1 ? "Naveed" : "Saud"}</h3>
             <p>Co-Founder &amp; {number === 1 ? "CEO" : "COO"}</p>
           </div>
@@ -753,7 +757,9 @@ function WhyLedgify() {
             Trust comes from knowing the work is organized, the communication is
             clear, and your support can keep pace as the business changes.
           </p>
-          <ConsultationButton>Start a Conversation</ConsultationButton>
+          <Link href="/why-ledgify-bpo" className="button">
+            Why LedgifyBPO <ArrowRight size={17} strokeWidth={1.8} aria-hidden="true" />
+          </Link>
         </div>
         <div className="why-reasons">
           {reasons.map(({ Icon, title, copy }, index) => (
@@ -1046,7 +1052,7 @@ export function HomePage() {
             description="The people behind your back office."
             centered
           />
-          <FounderCards />
+          <FounderCards raised />
           <div className="section-bottom-link">
             <Link href="/about" className="text-link">
               Learn more about our story <ArrowRight size={17} />
