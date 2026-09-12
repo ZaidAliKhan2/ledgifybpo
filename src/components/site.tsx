@@ -1,7 +1,13 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Facebook, Instagram, Linkedin } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowDown,
+  Facebook,
+  Instagram,
+  Linkedin,
+} from "lucide-react";
 import { Menu, X, Check } from "lucide-react";
 import {
   createContext,
@@ -12,15 +18,25 @@ import {
   type ReactNode,
   type FormEvent,
 } from "react";
-import { services } from "@/lib/content";
+import { services, industries } from "@/lib/content";
 
 const ConsultationContext = createContext<(service?: string) => void>(() => {});
+type ConsultationPayload = {
+  name: string;
+  email: string;
+  company: string;
+  services: string[];
+  service: string;
+  message: string;
+  website: string;
+};
 export function Logo({ decorative = false }: { decorative?: boolean }) {
   return (
     <Image
       src="/images/logo.png"
       width={200}
-      height={100}
+      height={38}
+      style={{ height: "auto" }}
       alt={decorative ? "" : "LedgifyBPO"}
       aria-hidden={decorative || undefined}
       role={decorative ? undefined : "img"}
@@ -47,7 +63,15 @@ export function ConsultationButton({
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState(services[0].name);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [mobileIndustriesOpen, setMobileIndustriesOpen] = useState(false);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [serviceError, setServiceError] = useState("");
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const [hoveredServiceSlug, setHoveredServiceSlug] = useState(
+    services[0].slug,
+  );
+  const [industriesDropdownOpen, setIndustriesDropdownOpen] = useState(false);
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
@@ -58,11 +82,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   function open(service?: string) {
     returnFocus.current = document.activeElement as HTMLElement;
-    setSelectedService(
+    setSelectedServices(
       service && services.some((s) => s.name === service)
-        ? service
-        : services[0].name,
+        ? [service]
+        : [],
     );
+    setServiceError("");
     setStatus("idle");
     setError("");
     setMobileOpen(false);
@@ -83,10 +108,23 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (selectedServices.length === 0) {
+      setServiceError("Choose at least one service.");
+      return;
+    }
     setStatus("sending");
-    const data = Object.fromEntries(
-      new FormData(event.currentTarget).entries(),
-    );
+    setServiceError("");
+    const formData = new FormData(event.currentTarget);
+    const read = (key: string) => String(formData.get(key) ?? "");
+    const data: ConsultationPayload = {
+      name: read("name"),
+      email: read("email"),
+      company: read("company"),
+      services: selectedServices,
+      service: selectedServices.join(", "),
+      message: read("message"),
+      website: read("website"),
+    };
     try {
       const response = await fetch("/api/consultations", {
         method: "POST",
@@ -123,11 +161,95 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Logo />
           </Link>
           <nav className="desktop-nav" aria-label="Main navigation">
-            {links.map(([label, href]) => (
-              <Link key={label} href={href}>
-                {label}
-              </Link>
-            ))}
+            {links.map(([label, href]) =>
+              label === "Services" ? (
+                <div
+                  key={label}
+                  className="services-nav-item"
+                  onMouseEnter={() => setServicesDropdownOpen(true)}
+                  onMouseLeave={() => setServicesDropdownOpen(false)}
+                >
+                  <Link href="/#services" className="services-trigger">
+                    Services <ArrowDown className="services-trigger-arrow" />
+                  </Link>
+
+                  {servicesDropdownOpen && (
+                    <div className="services-dropdown">
+                      <div className="services-dropdown-list">
+                        {services.map((service) => (
+                          <Link
+                            key={service.slug}
+                            href="/#services"
+                            onMouseEnter={() =>
+                              setHoveredServiceSlug(service.slug)
+                            }
+                            data-active={hoveredServiceSlug === service.slug}
+                          >
+                            {service.name}
+                          </Link>
+                        ))}
+                      </div>
+
+                      <div className="services-dropdown-preview">
+                        {(() => {
+                          const active = services.find(
+                            (s) => s.slug === hoveredServiceSlug,
+                          );
+                          return (
+                            <>
+                              {active?.image ? (
+                                <Image
+                                  src={active.image}
+                                  alt={active.name}
+                                  width={320}
+                                  height={180}
+                                  className="service-preview-img"
+                                />
+                              ) : (
+                                <div className="service-preview-img" />
+                              )}
+                              <p>{active?.description}</p>
+                            </>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : label === "Industries" ? (
+                <div
+                  key={label}
+                  className="industries-nav-item"
+                  onMouseEnter={() => setIndustriesDropdownOpen(true)}
+                  onMouseLeave={() => setIndustriesDropdownOpen(false)}
+                >
+                  <Link href="/#industries" className="industries-trigger">
+                    Industries
+                    <ArrowDown
+                      className="industries-trigger-arrow"
+                      aria-hidden="true"
+                    />
+                  </Link>
+
+                  {industriesDropdownOpen && (
+                    <div className="industries-dropdown">
+                      {industries.map((industry) => (
+                        <Link
+                          key={industry.slug}
+                          href={`/industries#${industry.slug}`}
+                        >
+                          {industry.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link key={label} href={href}>
+                  {label}
+                </Link>
+              ),
+            )}
           </nav>
           <div className="nav-actions">
             <ConsultationButton>Let&apos;s Talk</ConsultationButton>
@@ -149,15 +271,89 @@ export function SiteShell({ children }: { children: ReactNode }) {
             className="mobile-nav"
             aria-label="Mobile navigation"
           >
-            {links.map(([label, href]) => (
-              <Link
-                key={label}
-                href={href}
-                onClick={() => setMobileOpen(false)}
-              >
-                {label}
-              </Link>
-            ))}
+            {links.map(([label, href]) => {
+              if (label === "Services") {
+                return (
+                  <div key={label} className="mobile-accordion">
+                    <button
+                      type="button"
+                      className="mobile-accordion-trigger"
+                      onClick={() =>
+                        setMobileServicesOpen(!mobileServicesOpen)
+                      }
+                      aria-expanded={mobileServicesOpen}
+                    >
+                      Services
+                      <ArrowDown
+                        className={`mobile-accordion-arrow${
+                          mobileServicesOpen
+                            ? " mobile-accordion-arrow-open"
+                            : ""
+                        }`}
+                      />
+                    </button>
+                    {mobileServicesOpen && (
+                      <div className="mobile-accordion-panel">
+                        {services.map((service) => (
+                          <Link
+                            key={service.slug}
+                            href="/#services"
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            {service.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              if (label === "Industries") {
+                return (
+                  <div key={label} className="mobile-accordion">
+                    <button
+                      type="button"
+                      className="mobile-accordion-trigger"
+                      onClick={() =>
+                        setMobileIndustriesOpen(!mobileIndustriesOpen)
+                      }
+                      aria-expanded={mobileIndustriesOpen}
+                    >
+                      Industries
+                      <ArrowDown
+                        className={`mobile-accordion-arrow${
+                          mobileIndustriesOpen
+                            ? " mobile-accordion-arrow-open"
+                            : ""
+                        }`}
+                      />
+                    </button>
+                    {mobileIndustriesOpen && (
+                      <div className="mobile-accordion-panel">
+                        {industries.map((industry) => (
+                          <Link
+                            key={industry.slug}
+                            href={`/industries#${industry.slug}`}
+                            onClick={() => setMobileOpen(false)}
+                          >
+                            {industry.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+              return (
+                <Link
+                  key={label}
+                  href={href}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
         )}
       </header>
@@ -302,8 +498,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </span>
             <h2 id="consultation-title">Request received.</h2>
             <p>
-              Your consultation request has been saved. Thank you for getting in
-              touch.
+              Your consultation request for {selectedServices.join(", ")} has
+              been saved. Thank you for getting in touch.
             </p>
             <button className="button" onClick={close}>
               Done <ArrowRight size={17} />
@@ -350,18 +546,48 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   placeholder="Company name"
                 />
               </label>
-              <label>
-                Service
-                <select
-                  name="service"
-                  value={selectedService}
-                  onChange={(event) => setSelectedService(event.target.value)}
-                >
-                  {services.map((service) => (
-                    <option key={service.name}>{service.name}</option>
-                  ))}
-                </select>
-              </label>
+              <fieldset
+                className="service-selector"
+                aria-describedby={serviceError ? "service-error" : "service-hint"}
+              >
+                <legend>Services you&apos;re interested in</legend>
+                <p id="service-hint">Select all that apply.</p>
+                <div className="service-options">
+                  {services.map((service) => {
+                    const selected = selectedServices.includes(service.name);
+                    return (
+                      <label
+                        className={selected ? "service-option selected" : "service-option"}
+                        key={service.slug}
+                      >
+                        <input
+                          type="checkbox"
+                          name="services"
+                          value={service.name}
+                          checked={selected}
+                          onChange={(event) => {
+                            setSelectedServices((current) =>
+                              event.target.checked
+                                ? [...current, service.name]
+                                : current.filter((name) => name !== service.name),
+                            );
+                            setServiceError("");
+                          }}
+                        />
+                        <span className="service-option-check" aria-hidden="true">
+                          {selected && <Check size={14} />}
+                        </span>
+                        <span>{service.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+                {serviceError && (
+                  <p className="service-selection-error" id="service-error" role="alert">
+                    {serviceError}
+                  </p>
+                )}
+              </fieldset>
               <label>
                 How can we help? <span className="optional">(optional)</span>
                 <textarea name="message" rows={3} maxLength={3000} />

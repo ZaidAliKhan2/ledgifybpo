@@ -1,0 +1,129 @@
+.section { --motion: cubic-bezier(.22, 1, .36, 1); }
+.heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; margin-bottom: 32px; }
+.heading h2 { font-size: clamp(32px, 3.3vw, 46px); line-height: 1.15; letter-spacing: -1.8px; }
+.heading h2 span { color: var(--accent); }
+.heading > p { max-width: 310px; color: var(--text-secondary); font-size: 15px; line-height: 1.8; padding-bottom: 4px; }
+.navigation { margin-bottom: 20px; }
+.tabs { position: relative; isolation: isolate; display: flex; gap: 4px; padding: 6px; border: 1px solid #e6e4ef; border-radius: 14px; background: #f5f4f9; overflow-x: auto; scrollbar-width: thin; scroll-padding-inline: 6px; }
+.tabs button { position: relative; z-index: 1; display: flex; flex: 1 0 0; align-items: center; justify-content: center; gap: 10px; min-height: 60px; padding: 12px 13px; border-radius: 9px; background: transparent; color: #575365; font-size: 12px; font-weight: 600; text-align: left; line-height: 1.5; transition: color 240ms ease, background 240ms ease; }
+.tabs button[aria-selected="true"] { color: white; }
+.tabs button:focus-visible { outline-offset: -3px; outline-color: #a5a0ff; }
+.tabNumber { font-size: 10px; font-weight: 500; opacity: .65; }
+.indicator { position: absolute; z-index: 0; left: 0; top: 6px; bottom: 6px; width: calc((100% - 28px) / 5); transform: translateX(6px); border-radius: 9px; background: var(--accent); box-shadow: 0 4px 10px #312e811c; transition: transform 440ms var(--motion), width 440ms var(--motion); }
+.mobileHint { display: none; }
+.brief { border: 1px solid #e3e0ee; border-radius: 20px; overflow: hidden; background: #fcfbfe; box-shadow: 0 16px 42px #312e8108; }
+.content { display: grid; grid-template-columns: 1fr 1.08fr; transition: opacity 180ms ease, transform 180ms ease; }
+.brief[data-phase="exiting"] .content { opacity: 0; transform: translateY(-10px); pointer-events: none; }
+.overview { position: relative; display: flex; flex-direction: column; align-items: flex-start; overflow: hidden; padding: 38px 42px 36px; border-right: 1px solid #e3e0ee; }
+.label { display: flex; align-items: center; gap: 13px; margin-bottom: 26px; }
+.monogram { display: grid; place-items: center; width: 38px; height: 38px; flex-shrink: 0; border: 1px solid #d7d1ed; border-radius: 50%; color: var(--accent); font-size: 11px; font-weight: 600; }
+.label h3 { color: var(--accent-deep); font-size: 12px; letter-spacing: .01em; }
+.statement { position: relative; z-index: 1; max-width: 440px; font-family: var(--font-heading), sans-serif; font-size: clamp(28px, 2.65vw, 38px); font-weight: 600; letter-spacing: -1.25px; line-height: 1.2; }
+.introduction { position: relative; z-index: 1; max-width: 420px; margin-top: 19px; margin-bottom: 30px; color: #625e70; font-size: 14px; line-height: 1.85; }
+.cta { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 22px; margin-top: auto; color: var(--accent-deep); font-size: 13px; font-weight: 600; }
+.cta > span { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #d7d1ed; border-radius: 50%; background: #fcfbfe; transition: color 240ms, background 240ms, transform 350ms var(--motion); }
+.linework { position: absolute; right: -70px; bottom: -104px; width: 240px; height: 240px; transform: rotate(-25deg); pointer-events: none; }
+.linework i { position: absolute; inset: 0; border: 1px solid #4338ca15; border-radius: 50%; }
+.linework i:nth-child(2) { inset: 23px; }
+.linework i:nth-child(3) { inset: 46px; }
+.linework b { position: absolute; top: 32px; left: 32px; width: 7px; height: 7px; border-radius: 50%; background: #a49ce1; }
+.responsibilities { padding: 38px 38px 24px; background: white; }
+.kicker { font-size: 10px; font-weight: 600; letter-spacing: .13em; color: #746b88; }
+.responsibilities ol { list-style: none; margin: 18px 0 0; padding: 0; }
+.responsibilities li { position: relative; display: grid; grid-template-columns: 32px 1fr; gap: 15px; padding: 21px 0; border-top: 1px solid #eae7f1; }
+.itemNumber { padding-top: 3px; color: #9285b0; font-size: 11px; font-variant-numeric: tabular-nums; transition: color 250ms, transform 350ms var(--motion); }
+.responsibilities h4 { margin: 0 0 7px; color: #302842; font-family: var(--font-heading), sans-serif; font-size: 15px; font-weight: 600; line-height: 1.4; }
+.responsibilities li p { color: #70697c; font-size: 13px; line-height: 1.75; max-width: 400px; }
+.deliverables { display: grid; grid-template-columns: 1fr 1.7fr; align-items: center; gap: 25px; grid-column: 1 / -1; padding: 26px 38px; color: white; background: var(--accent-deep); }
+.deliverables .kicker { color: #c9c4f4; font-size: 9px; }
+.deliverables > div > p + p { margin-top: 7px; font-family: var(--font-heading), sans-serif; font-size: 16px; font-weight: 500; }
+.deliverables ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; gap: 19px; padding: 0; margin: 0; }
+.deliverables li { display: flex; align-items: flex-start; gap: 9px; font-size: 12px; line-height: 1.6; }
+.deliverables svg { flex-shrink: 0; margin-top: 2px; color: #b8b0ff; }
+/* Service signatures share the existing row geometry and motion system. */
+.workMarker { position: relative; display: grid; place-items: center; width: 23px; height: 23px; color: var(--accent); }
+.workMarker svg { position: relative; z-index: 1; }
+
+/* Bookkeeping: paired ledger rules and reconciled entries. */
+.brief[data-service="bookkeeping"] .responsibilities li { border-top-style: double; border-top-width: 3px; padding-top: 19px; }
+.brief[data-service="bookkeeping"] .workMarker { border-bottom: 2px solid #d7d1ed; }
+.brief[data-service="bookkeeping"] .deliverables li { border-bottom: 1px solid #c9c4f440; padding-bottom: 7px; }
+.brief[data-service="bookkeeping"] .deliverables li::after { content: "="; margin-left: auto; color: #b8b0ff; }
+
+/* Accounting: a statement's ruled margin and document folios. */
+.brief[data-service="accounting"] .responsibilities li > div { border-left: 1px solid #d7d1ed; padding-left: 14px; }
+.brief[data-service="accounting"] .workMarker { border: 1px solid #d7d1ed; border-radius: 2px; background: #fcfbfe; }
+.brief[data-service="accounting"] .deliverables li { position: relative; border-left: 2px solid #b8b0ff; padding-left: 10px; }
+.brief[data-service="accounting"] .deliverables li::after { content: ""; position: absolute; top: 0; right: 0; width: 5px; height: 5px; border-top: 1px solid #b8b0ff; border-right: 1px solid #b8b0ff; }
+
+/* Tax: a connected preparation checklist, without invented due dates. */
+.brief[data-service="tax"] .responsibilities li { border-top-color: transparent; }
+.brief[data-service="tax"] .responsibilities li:not(:last-child)::after { content: ""; position: absolute; left: 11px; top: 48px; bottom: -20px; border-left: 1px dashed #d7d1ed; }
+.brief[data-service="tax"] .workMarker { border: 1px solid #d7d1ed; border-radius: 4px; background: #fcfbfe; }
+.brief[data-service="tax"] .deliverables li { border: 1px dashed #c9c4f466; border-radius: 4px; padding: 7px 9px; }
+
+/* Advisory: branches for exploring alternatives, rather than a growth chart. */
+.brief[data-service="advisory"] .responsibilities li { border-top-color: transparent; }
+.brief[data-service="advisory"] .responsibilities li:not(:first-child)::before { content: ""; position: absolute; left: 11px; top: -17px; width: 22px; height: 42px; border-left: 1px solid #d7d1ed; border-bottom: 1px solid #d7d1ed; border-bottom-left-radius: 10px; }
+.brief[data-service="advisory"] .workMarker { background: white; }
+.brief[data-service="advisory"] .deliverables li { border-top: 1px solid #c9c4f466; padding-top: 8px; }
+.brief[data-service="advisory"] .deliverables li::after { content: "↗"; margin-left: auto; color: #b8b0ff; }
+
+/* HR: people nodes and linked handoffs. */
+.brief[data-service="remote-hr-services"] .workMarker { border-radius: 50%; background: #f1eef9; outline: 1px solid #e3e0ee; outline-offset: 3px; }
+.brief[data-service="remote-hr-services"] .responsibilities li:not(:last-child)::after { content: ""; position: absolute; left: 11px; top: 53px; bottom: -14px; border-left: 1px solid #e3e0ee; }
+.brief[data-service="remote-hr-services"] .deliverables li { align-items: center; }
+.brief[data-service="remote-hr-services"] .deliverables svg { width: 25px; height: 25px; padding: 4px; margin-top: 0; border: 1px solid #c9c4f466; border-radius: 50%; }
+.brief[data-phase="entering"] .label,
+.brief[data-phase="entering"] .statement,
+.brief[data-phase="entering"] .introduction,
+.brief[data-phase="entering"] .cta,
+.brief[data-phase="entering"] .responsibilities li,
+.brief[data-phase="entering"] .deliverables li { animation: reveal 620ms var(--motion) both; }
+.brief[data-phase="entering"] .statement { animation-delay: 45ms; }
+.brief[data-phase="entering"] .introduction { animation-delay: 90ms; }
+.brief[data-phase="entering"] .cta { animation-delay: 140ms; }
+.brief[data-phase="entering"] .responsibilities li { animation-delay: calc(80ms + var(--step) * 85ms); }
+.brief[data-phase="entering"] .deliverables li { animation-delay: calc(200ms + var(--step) * 70ms); }
+.brief[data-phase="entering"] .linework { animation: trace 1100ms var(--motion) both; }
+.brief[data-phase="entering"] .deliverables svg { animation: check-in 500ms calc(350ms + var(--step) * 70ms) var(--motion) both; }
+@keyframes reveal { from { opacity: 0; transform: translateY(19px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes trace { from { opacity: 0; transform: rotate(-70deg) scale(.9); } to { opacity: 1; transform: rotate(-25deg) scale(1); } }
+@keyframes check-in { from { opacity: 0; transform: scale(.5); } to { opacity: 1; transform: scale(1); } }
+@media (hover: hover) {
+  .tabs button:not([aria-selected="true"]):hover { color: var(--accent); background: #4338ca09; }
+  .cta:hover > span { color: white; background: var(--accent); transform: rotate(45deg); }
+  .responsibilities li:hover .itemNumber { color: var(--accent); transform: translateX(4px); }
+}
+@media (max-width: 1100px) {
+  .tabs button { gap: 7px; padding-inline: 10px; }
+  .tabNumber { display: none; }
+  .overview { padding: 30px 28px; }
+  .responsibilities { padding: 30px 28px 18px; }
+  .deliverables { padding: 25px 28px; grid-template-columns: 1fr; gap: 20px; }
+}
+@media (max-width: 767px) {
+  .heading { display: block; margin-bottom: 25px; }
+  .heading h2 { letter-spacing: -1.2px; }
+  .heading > p { max-width: 440px; margin-top: 16px; font-size: 14px; }
+  .tabs { border-radius: 12px; }
+  .tabs button { flex: 0 0 auto; min-height: 48px; padding-inline: 16px; white-space: nowrap; }
+  .indicator { width: 175px; }
+  .mobileHint { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 9px; color: #746b88; font-size: 10px; }
+  .content { grid-template-columns: 1fr; }
+  .brief { border-radius: 15px; }
+  .overview { border-right: 0; border-bottom: 1px solid #e3e0ee; padding: 26px; }
+  .label { margin-bottom: 19px; }
+  .statement { max-width: 490px; font-size: 30px; }
+  .introduction { margin-block: 15px 22px; font-size: 13px; }
+  .responsibilities { padding: 25px 26px 8px; }
+  .responsibilities li { padding-block: 18px; grid-template-columns: 23px 1fr; gap: 11px; }
+  .responsibilities h4 { font-size: 14px; }
+  .deliverables { padding: 25px 26px; gap: 18px; }
+  .deliverables ul { grid-template-columns: 1fr; gap: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section *, .section *::before, .section *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .brief[data-phase="exiting"] .content { opacity: 1; transform: none; }
+  .cta:hover > span, .responsibilities li:hover .itemNumber { transform: none; }
+}

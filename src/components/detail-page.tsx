@@ -1,15 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { services, industries } from "@/lib/content";
+import { services } from "@/lib/content";
 import { SiteShell, ConsultationButton } from "@/components/site";
-import {
-  DashboardWidgets,
-  IndustryCards,
-  FounderCards,
-} from "@/components/home-page";
+import { DashboardWidgets, FounderCards } from "@/components/home-page";
 
 type Props = { params: Promise<{ section: string; slug?: string }> };
 
@@ -18,24 +13,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title =
     section === "services"
       ? services.find((s) => s.slug === slug)?.name || "Services"
-      : section === "industries"
-        ? industries.find((i) => i.slug === slug)?.name || "Industries"
-        : section === "about"
-          ? "About Us"
-          : section === "careers"
-            ? "Careers"
-            : "Page not found";
+      : section === "about"
+        ? "About Us"
+        : section === "careers"
+          ? "Careers"
+          : "Page not found";
   return { title: `${title} | LedgifyBPO` };
 }
 
 export default async function DetailPage({ params }: Props) {
   const { section, slug } = await params;
   const serviceIndex = services.findIndex((service) => service.slug === slug);
-  const industry = industries.find((industry) => industry.slug === slug);
-  if (!["services", "industries", "about", "careers"].includes(section))
-    notFound();
+
+  if (!["services", "about", "careers"].includes(section)) notFound();
   if (section === "services" && serviceIndex < 0) notFound();
-  if (section === "industries" && slug && !industry) notFound();
   if ((section === "about" || section === "careers") && slug) notFound();
   return (
     <SiteShell>
@@ -57,33 +48,6 @@ export default async function DetailPage({ params }: Props) {
               </div>
               <DashboardWidgets active={serviceIndex} />
             </div>
-          )}
-          {section === "industries" && !industry && (
-            <>
-              <p className="eyebrow">WHO WE WORK WITH</p>
-              <h1>Your industry. Our expertise.</h1>
-              <p className="detail-intro">
-                Specialized accounting for the way your business works.
-              </p>
-              <IndustryCards />
-            </>
-          )}
-          {section === "industries" && industry && (
-            <>
-              <p className="eyebrow">WHO WE WORK WITH</p>
-              <h1>{industry.name}</h1>
-              <p className="detail-intro">{industry.description}</p>
-              <ConsultationButton />
-              <div className="detail-image">
-                <Image
-                  src={industry.image}
-                  alt={`${industry.name} business`}
-                  fill
-                  priority
-                  sizes="(max-width: 767px) 100vw, 1200px"
-                />
-              </div>
-            </>
           )}
           {section === "about" && (
             <>

@@ -8,20 +8,38 @@ import {
   Building2,
   ShieldCheck,
   Cloud,
-  Linkedin,
   Check,
-  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  Layers3,
+  Pause,
+  Play,
+  UsersRound,
+  Workflow,
 } from "lucide-react";
 import {
+  SiClickup,
   SiQuickbooks,
-  SiXero,
+  SiNotion,
+  SiOdoo,
+  SiSap,
   SiGusto,
   SiStripe,
   SiExpensify,
+  SiXero,
 } from "react-icons/si";
-import { useRef, useState, type KeyboardEvent } from "react";
+import { FaMicrosoft, FaSlack } from "react-icons/fa6";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { ConsultationButton, Logo } from "@/components/site";
 import { services, industries, values } from "@/lib/content";
+import { ServicesSection } from "./services-section";
+
+export { ServicesSection } from "./services-section";
 
 const valueIcons = [Clock, Building2, ShieldCheck, Cloud];
 const tools = [
@@ -30,6 +48,28 @@ const tools = [
   { Icon: SiGusto, name: "Gusto" },
   { Icon: SiStripe, name: "Stripe" },
   { Icon: SiExpensify, name: "Expensify" },
+  { Icon: SiSap, name: "SAP" },
+  { Icon: SiOdoo, name: "Odoo" },
+  { Icon: FaSlack, name: "Slack" },
+  { Icon: FaMicrosoft, name: "Microsoft 365" },
+  { Icon: Building2, name: "Buildium" },
+  { Icon: SiNotion, name: "Notion" },
+  { Icon: SiClickup, name: "ClickUp" },
+];
+
+const heroSlides = [
+  {
+    src: "/images/hero/office-collaboration.webp",
+    alt: "Finance professionals reviewing reports together in a modern office",
+  },
+  {
+    src: "/images/hero/financial-review.webp",
+    alt: "Finance specialist reviewing business reports at her desk",
+  },
+  {
+    src: "/images/hero/operations-team.webp",
+    alt: "Back-office operations team collaborating around financial documents",
+  },
 ];
 
 export function SectionHeading({
@@ -402,105 +442,177 @@ export function DashboardWidgets({ active }: { active: number }) {
   );
 }
 
-export function ServicesSection() {
-  const [active, setActive] = useState(0);
-  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  function navigateTabs(
-    event: KeyboardEvent<HTMLButtonElement>,
-    index: number,
-  ) {
-    let next = index;
-    if (event.key === "ArrowRight") next = (index + 1) % services.length;
-    else if (event.key === "ArrowLeft")
-      next = (index - 1 + services.length) % services.length;
-    else if (event.key === "Home") next = 0;
-    else if (event.key === "End") next = services.length - 1;
-    else return;
-    event.preventDefault();
-    setActive(next);
-    tabs.current[next]?.focus();
-  }
-  return (
-    <section className="section services-section" id="services">
-      <div className="container">
-        <SectionHeading
-          eyebrow="OUR SERVICES"
-          title="Your back office. Taken care of."
-          description="The right financial support, at every stage of your growth."
-        />
-        <div
-          className="service-tabs"
-          role="tablist"
-          aria-label="Accounting services"
-        >
-          {services.map((service, index) => (
-            <button
-              ref={(element) => {
-                tabs.current[index] = element;
-              }}
-              key={service.slug}
-              type="button"
-              role="tab"
-              id={`tab-${index}`}
-              aria-selected={active === index}
-              aria-controls="service-panel"
-              tabIndex={active === index ? 0 : -1}
-              className={active === index ? "active" : ""}
-              onClick={() => setActive(index)}
-              onKeyDown={(event) => navigateTabs(event, index)}
-            >
-              {service.name}
-            </button>
-          ))}
-        </div>
-        <div
-          className="service-panel"
-          id="service-panel"
-          role="tabpanel"
-          aria-labelledby={`tab-${active}`}
-          tabIndex={0}
-        >
-          <DashboardWidgets active={active} />
-          <div className="service-copy" key={active}>
-            <h3>{services[active].name}</h3>
-            <p>{services[active].description}</p>
-            <Link
-              href={`/services/${services[active].slug}`}
-              className="text-link"
-            >
-              Learn more <ArrowRight size={17} />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 export function IndustryCards() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const scrollFrame = useRef<number | null>(null);
+  const currentPageRef = useRef(0);
+  const itemsPerPageRef = useRef(4);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const pages = Array.from(
+    { length: Math.ceil(industries.length / itemsPerPage) },
+    (_, index) =>
+      industries.slice(index * itemsPerPage, (index + 1) * itemsPerPage),
+  );
+
+  useEffect(() => {
+    function updatePageSize() {
+      const nextItemsPerPage =
+        window.innerWidth >= 1400 ? 4 : window.innerWidth >= 1100 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+      const previousItemsPerPage = itemsPerPageRef.current;
+      if (nextItemsPerPage === previousItemsPerPage) return;
+
+      const firstVisibleIndustry =
+        currentPageRef.current * previousItemsPerPage;
+      const nextPage = Math.floor(firstVisibleIndustry / nextItemsPerPage);
+      itemsPerPageRef.current = nextItemsPerPage;
+      currentPageRef.current = nextPage;
+      setItemsPerPage(nextItemsPerPage);
+      setCurrentPage(nextPage);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const track = trackRef.current;
+          const target = track?.querySelector<HTMLElement>(
+            `[data-carousel-page="${nextPage}"]`,
+          );
+          if (track && target) track.scrollTo({ left: target.offsetLeft });
+        });
+      });
+    }
+
+    updatePageSize();
+    window.addEventListener("resize", updatePageSize);
+    return () => {
+      window.removeEventListener("resize", updatePageSize);
+      if (scrollFrame.current) cancelAnimationFrame(scrollFrame.current);
+    };
+  }, []);
+
+  function goToPage(index: number) {
+    const track = trackRef.current;
+    if (!track) return;
+    const safeIndex = Math.max(0, Math.min(index, pages.length - 1));
+    const target = track.querySelector<HTMLElement>(
+      `[data-carousel-page="${safeIndex}"]`,
+    );
+    if (!target) return;
+    currentPageRef.current = safeIndex;
+    setCurrentPage(safeIndex);
+    track.scrollTo({
+      left: target.offsetLeft,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  }
+
+  function updatePaginationFromScroll() {
+    const track = trackRef.current;
+    if (!track) return;
+    if (scrollFrame.current) cancelAnimationFrame(scrollFrame.current);
+    scrollFrame.current = requestAnimationFrame(() => {
+      const trackLeft = track.getBoundingClientRect().left;
+      const slideElements = Array.from(
+        track.querySelectorAll<HTMLElement>("[data-carousel-page]"),
+      );
+      let nearestPage = 0;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+      slideElements.forEach((slide, index) => {
+        const distance = Math.abs(slide.getBoundingClientRect().left - trackLeft);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestPage = index;
+        }
+      });
+      currentPageRef.current = nearestPage;
+      setCurrentPage(nearestPage);
+    });
+  }
+
   return (
-    <div className="industry-grid">
-      {industries.map((industry) => (
-        <article key={industry.slug} className="industry-card">
-          <Image
-            src={industry.image}
-            alt={`${industry.name} business`}
-            fill
-            sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 25vw"
-          />
-          <div className="industry-content">
-            <h3>{industry.name}</h3>
-            <p>{industry.description}</p>
-            <Link
-              href={`/industries/${industry.slug}`}
-              className="button industry-button"
-              aria-label={`See how we help ${industry.name} businesses`}
-            >
-              See How We Help <ArrowRight size={15} />
-            </Link>
+    <div
+      className="industry-carousel"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Industries LedgifyBPO supports"
+    >
+      <button
+        type="button"
+        className="industry-carousel-arrow previous"
+        onClick={() => goToPage(currentPage - 1)}
+        aria-label="Previous industries"
+        disabled={currentPage === 0}
+      >
+        <ChevronLeft aria-hidden="true" />
+      </button>
+      <div className="industry-viewport">
+        <div
+          className="industry-track"
+          ref={trackRef}
+          tabIndex={0}
+          onScroll={updatePaginationFromScroll}
+          aria-label="Swipe horizontally or use the arrow buttons to explore industries"
+        >
+          {pages.map((page, pageIndex) => (
+          <div
+            className="industry-page"
+            key={page.map((industry) => industry.slug).join("-")}
+            data-carousel-page={pageIndex}
+            style={{ "--cards-per-page": itemsPerPage } as CSSProperties}
+            aria-label={`Industry group ${pageIndex + 1} of ${pages.length}`}
+          >
+            {page.map((industry) => (
+              <article
+                key={industry.slug}
+                className="industry-card"
+                id={industry.slug}
+              >
+                <Image
+                  src={industry.image}
+                  alt={`${industry.name} operations`}
+                  fill
+                  sizes="(max-width: 767px) 84vw, (max-width: 1099px) 44vw, (max-width: 1399px) 30vw, 285px"
+                />
+                <div className="industry-content">
+                  <h3>{industry.name}</h3>
+                  <p>{industry.description}</p>
+                  <Link
+                    href={`/industries#${industry.slug}`}
+                    className="button industry-button"
+                    aria-label={`Explore our work with ${industry.name} businesses`}
+                  >
+                    Explore Industries <ArrowRight size={15} />
+                  </Link>
+                </div>
+              </article>
+            ))}
           </div>
-        </article>
-      ))}
+          ))}
+        </div>
+      </div>
+      <button
+        type="button"
+        className="industry-carousel-arrow next"
+        onClick={() => goToPage(currentPage + 1)}
+        aria-label="Next industries"
+        disabled={currentPage === pages.length - 1}
+      >
+        <ChevronRight aria-hidden="true" />
+      </button>
+      <div className="industry-pagination" aria-label="Choose an industry group">
+        {pages.map((page, index) => (
+          <button
+            type="button"
+            key={page.map((industry) => industry.slug).join("-")}
+            className={currentPage === index ? "active" : ""}
+            onClick={() => goToPage(index)}
+            aria-label={`Show industry group ${index + 1} of ${pages.length}`}
+            aria-current={currentPage === index ? "true" : undefined}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -509,32 +621,154 @@ export function FounderCards() {
   return (
     <div className="founder-grid" id="founders">
       {[1, 2].map((number) => (
-        <article key={number} className="founder-card" tabIndex={0}>
+        <article key={number} className="founder-card">
           <div className="founder-portrait">
+            <span className="founder-index" aria-hidden="true">
+              0{number}
+            </span>
             <Image
-              src={`/images/founder-${number}-name.png`}
-              alt={`Placeholder portrait for co-founder ${number}`}
+              src={
+                number === 1
+                  ? "/images/founder-naveed.webp"
+                  : "/images/founder-saud.webp"
+              }
+              alt={`${number === 1 ? "Naveed" : "Saud"}, Co-Founder and ${number === 1 ? "CEO" : "COO"} of LedgifyBPO`}
               fill
-              sizes="(max-width: 600px) 85vw, 400px"
+              sizes="(max-width: 480px) 86vw, (max-width: 767px) 44vw, 460px"
             />
           </div>
           <div className="founder-information">
-            <div>
-              <h3>{number == 1 ? "Naveed" : "Saud"}</h3>
-              <p>Co-Founder &amp; {number === 1 ? "CEO" : "COO"}</p>
-            </div>
-            <Link
-              href="/about#linkedin"
-              aria-label={`Co-founder ${number} LinkedIn profile information`}
-              className="founder-linkedin"
-            >
-              <Linkedin size={19} />
-            </Link>
+            <p className="founder-kicker">LEADERSHIP</p>
+            <h3>{number == 1 ? "Naveed" : "Saud"}</h3>
+            <p>Co-Founder &amp; {number === 1 ? "CEO" : "COO"}</p>
           </div>
-          <p className="founder-bio">Founder biography to be added.</p>
         </article>
       ))}
     </div>
+  );
+}
+
+function HeroSlideshow() {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (paused || reduceMotion) return;
+    const interval = window.setInterval(
+      () => setActive((current) => (current + 1) % heroSlides.length),
+      6000,
+    );
+    return () => window.clearInterval(interval);
+  }, [paused]);
+
+  function select(direction: -1 | 1) {
+    setActive(
+      (current) =>
+        (current + direction + heroSlides.length) % heroSlides.length,
+    );
+  }
+
+  return (
+    <div
+      className="hero-slideshow"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="LedgifyBPO teams at work"
+    >
+      <div className="hero-slides">
+        {heroSlides.map((slide, index) => (
+          <Image
+            key={slide.src}
+            src={slide.src}
+            alt={index === active ? slide.alt : ""}
+            fill
+            priority={index === 0}
+            sizes="(max-width: 767px) 100vw, 47vw"
+            className={index === active ? "active" : ""}
+            aria-hidden={index !== active}
+          />
+        ))}
+      </div>
+      <div className="hero-slide-overlay" aria-hidden="true" />
+      <div className="hero-slide-caption">
+        <span>Finance operations, thoughtfully supported.</span>
+        <span>{String(active + 1).padStart(2, "0")} / 03</span>
+      </div>
+      <div className="hero-slide-controls">
+        <button type="button" onClick={() => select(-1)} aria-label="Previous office image">
+          <ChevronLeft aria-hidden="true" />
+        </button>
+        <div className="hero-slide-dots" aria-label="Choose an office image">
+          {heroSlides.map((slide, index) => (
+            <button
+              type="button"
+              key={slide.src}
+              className={active === index ? "active" : ""}
+              aria-label={`Show image ${index + 1} of ${heroSlides.length}`}
+              aria-current={active === index ? "true" : undefined}
+              onClick={() => setActive(index)}
+            />
+          ))}
+        </div>
+        <button type="button" onClick={() => setPaused((value) => !value)} aria-label={paused ? "Play office slideshow" : "Pause office slideshow"} aria-pressed={paused}>
+          {paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
+        </button>
+        <button type="button" onClick={() => select(1)} aria-label="Next office image">
+          <ChevronRight aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function WhyLedgify() {
+  const reasons = [
+    {
+      Icon: UsersRound,
+      title: "Support built around your team",
+      copy: "A collaborative extension of your business that takes time to understand how your operation actually works.",
+    },
+    {
+      Icon: Layers3,
+      title: "Capacity that scales with you",
+      copy: "Flexible back-office support for focused small teams, growing businesses, and more complex organizations.",
+    },
+    {
+      Icon: Workflow,
+      title: "Clear processes, visible work",
+      copy: "Organized workflows, dependable reporting, and support that fits the systems your team already uses.",
+    },
+  ];
+
+  return (
+    <section className="section why-section" id="why-ledgify">
+      <div className="container why-grid">
+        <div className="why-intro">
+          <p className="eyebrow">WHY LEDGIFYBPO?</p>
+          <h2>A back office you can build on.</h2>
+          <p>
+            Trust comes from knowing the work is organized, the communication is
+            clear, and your support can keep pace as the business changes.
+          </p>
+          <ConsultationButton>Start a Conversation</ConsultationButton>
+        </div>
+        <div className="why-reasons">
+          {reasons.map(({ Icon, title, copy }, index) => (
+            <article key={title}>
+              <span className="why-number">0{index + 1}</span>
+              <span className="why-icon"><Icon aria-hidden="true" /></span>
+              <div>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -742,31 +976,30 @@ export function HomePage() {
               Built for businesses ready to grow with confidence.
             </p>
           </div>
-          <div className="hero-image">
-            <Image
-              src="/images/main-hero.jpeg"
-              alt="Bookkeeping professional reviewing financial records at her desk"
-              fill
-              priority
-              sizes="(max-width: 767px) 100vw, 47vw"
-            />
-          </div>
+          <HeroSlideshow />
         </div>
       </section>
       <section className="trust-strip" aria-label="Software integrations">
-        <div className="container">
-          <p>INTEGRATES WITH THE TOOLS YOU ALREADY USE</p>
-          <div className="tool-row">
-            {tools.map(({ Icon, name }) => (
-              <div className="tool-brand" key={name} tabIndex={0}>
-                <Icon aria-hidden="true" />
-                <span>{name}</span>
+        <div className="container trust-heading">
+          <p>WORKS WITH THE TOOLS YOU ALREADY USE</p>
+          <span>Experienced across the platforms your business already depends on.</span>
+        </div>
+        <div className="tool-window" tabIndex={0} aria-label="Supported business tools. Focus or hover to pause scrolling.">
+          <div className="tool-track">
+            {[0, 1].map((copy) => (
+              <div className="tool-group" key={copy} aria-hidden={copy === 1 ? true : undefined}>
+                {tools.map(({ Icon, name }) => (
+                  <div className="tool-brand" key={name}>
+                    <Icon aria-hidden="true" />
+                    <span>{name}</span>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
         </div>
       </section>
-      <section className="section value-section" id="why-ledgify">
+      <section className="section value-section" id="ledgify-difference">
         <div className="container">
           <SectionHeading
             eyebrow="THE LEDGIFY DIFFERENCE"
@@ -804,6 +1037,7 @@ export function HomePage() {
           </div>
         </div>
       </section>
+      <WhyLedgify />
       <section className="section founders-section" id="about">
         <div className="container">
           <SectionHeading
