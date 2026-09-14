@@ -1,121 +1,208 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { CompanySection, PageCTA, PageHero } from "@/components/company-page";
-import { FounderCards } from "@/components/home-page";
-import { SiteShell } from "@/components/site";
-import styles from "@/components/company-page.module.css";
+import Image from "next/image";
+import { ArrowDown, Compass, Handshake, MessagesSquare } from "lucide-react";
+import { AboutFounders } from "@/components/about-founders";
+import { ConsultationButton, SiteShell } from "@/components/site";
+import styles from "./about-page.module.css";
 
 export const metadata: Metadata = {
-  title: "About Us | LedgifyBPO",
+  title: "About the Founders | LedgifyBPO",
   description:
-    "Meet LedgifyBPO and its founders. Learn about our approach to bookkeeping, accounting, and remote back-office support for businesses.",
+    "Meet Naveed and Saud, the co-founders of LedgifyBPO, and learn about the principles behind the company they are building.",
 };
+
+const principles = [
+  {
+    number: "01",
+    Icon: MessagesSquare,
+    title: "Clarity over complexity",
+    copy: "Make the work, the questions, and the next step easy to understand.",
+  },
+  {
+    number: "02",
+    Icon: Handshake,
+    title: "Work that earns trust",
+    copy: "Build confidence through care, consistency, and honest communication.",
+  },
+  {
+    number: "03",
+    Icon: Compass,
+    title: "Support that fits",
+    copy: "Start with the business in front of us—not a one-size-fits-all playbook.",
+  },
+];
 
 export default function AboutPage() {
   return (
     <SiteShell>
-      <main id="main">
-        <PageHero
-          eyebrow="ABOUT LEDGIFYBPO"
-          title="The people and process behind your back office."
-          description="LedgifyBPO supports the financial and administrative work that keeps a business organized—from everyday records to reporting, planning, and people operations."
-        />
-
-        <CompanySection id="who-we-are" eyebrow="WHO WE ARE" title="An extension of your team.">
-          <div className={styles.prose}>
-            <p>
-              Our work brings together bookkeeping, accounting and reporting,
-              tax preparation coordination, financial advisory, and remote HR
-              administration. We help businesses organize these responsibilities
-              around the needs of their teams.
-            </p>
-            <p>
-              That means understanding the records, systems, and handoffs behind
-              the work, as well as the people who depend on it. The aim is to make
-              recurring operations easier to manage and financial information
-              easier to use.
-            </p>
-          </div>
-        </CompanySection>
-
-        <CompanySection id="mission-and-approach" eyebrow="OUR DIRECTION" title="Useful support starts with understanding." tone="muted">
-          <div className={styles.columns}>
-            <article className={styles.panel}>
-              <h3>Our mission</h3>
-              <p>
-                To help businesses build an organized back office, giving their
-                teams more room to focus on customers, people, and the decisions
-                ahead.
+      <main id="main" className={styles.page}>
+        <section className={styles.hero} aria-labelledby="about-heading">
+          <div className={`container ${styles.heroGrid}`}>
+            <div className={styles.heroCopy}>
+              <p className="eyebrow">ABOUT LEDGIFYBPO</p>
+              <h1 id="about-heading">
+                Built by people who believe business support should feel personal.
+              </h1>
+              <p className={styles.heroIntro}>
+                Meet Naveed and Saud—the founders shaping a more thoughtful,
+                connected way to support growing businesses.
               </p>
-            </article>
-            <article className={styles.panel}>
-              <h3>Our approach</h3>
-              <p>
-                Start with how the business works today. Agree the responsibilities
-                and review points, then establish a practical rhythm for records,
-                communication, and follow-through.
-              </p>
-            </article>
-          </div>
-        </CompanySection>
+              <a href="#our-vision" className={styles.storyLink}>
+                Our founding vision <ArrowDown size={16} aria-hidden="true" />
+              </a>
+            </div>
 
-        <CompanySection
-          id="leadership"
-          eyebrow="OUR FOUNDERS"
-          title="Meet the leadership behind LedgifyBPO."
-          description="Naveed and Saud are the co-founders of LedgifyBPO, serving as CEO and COO respectively."
+            <aside className={styles.heroVisual} aria-label="The thinking behind LedgifyBPO">
+              <p className={styles.beliefLabel}>THE THINKING BEHIND LEDGIFYBPO</p>
+              <p className={styles.beliefStatement}>
+                Behind every business,<br />
+                <em>there are people.</em>
+              </p>
+              <p className={styles.beliefNote}>
+                Their priorities. Their decisions. Their trust.<br />
+                That is where thoughtful support begins.
+              </p>
+              <div className={styles.beliefSignature}>
+                <span aria-hidden="true" />
+                <p>Naveed &amp; Saud<small>Founders, LedgifyBPO</small></p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section
+          id="our-vision"
+          className={styles.vision}
+          aria-label="Founder visions"
         >
-          <FounderCards />
-        </CompanySection>
-
-        <CompanySection id="how-we-work" eyebrow="HOW WE WORK" title="A shared understanding of the work." tone="muted">
-          <ol className={styles.steps}>
-            <li>
-              <h3>Understand the starting point</h3>
-              <p>Discuss the current workload, the systems in use, and the recurring tasks that need more attention.</p>
-            </li>
-            <li>
-              <h3>Agree responsibilities</h3>
-              <p>Define the work in scope, the information needed, and the people who will review and approve it.</p>
-            </li>
-            <li>
-              <h3>Build a working rhythm</h3>
-              <p>Organize recurring tasks, questions, and handoffs so your team knows what comes next.</p>
-            </li>
-            <li>
-              <h3>Review as needs change</h3>
-              <p>Revisit priorities and the shape of the support as your business develops.</p>
-            </li>
-          </ol>
-        </CompanySection>
-
-        <CompanySection id="principles" eyebrow="OUR PRINCIPLES" title="What guides the day-to-day work.">
-          <div className={styles.cards}>
-            <article className={styles.panel}>
-              <h3>Clarity</h3>
-              <p>Make responsibilities, questions, and next steps understandable to everyone involved.</p>
+          <div className="container">
+            <article
+              className={styles.founderVision}
+              aria-labelledby="naveed-vision-heading"
+            >
+              <div className={styles.visionPortrait}>
+                <span className={styles.visionIndex} aria-hidden="true">01</span>
+                <div className={styles.visionHalo} aria-hidden="true" />
+                <Image
+                  src="/images/founder-1-name.png"
+                  alt="Naveed, Co-Founder and CEO of LedgifyBPO"
+                  fill
+                  sizes="(max-width: 900px) 78vw, 440px"
+                  className={styles.visionPortraitImage}
+                />
+              </div>
+              <div className={styles.visionCopy}>
+                <p className="eyebrow">NAVEED&apos;S VISION</p>
+                <h2 id="naveed-vision-heading">
+                  Support should begin with understanding the business behind the work.
+                </h2>
+                <p className={styles.visionStatement}>
+                  Naveed&apos;s vision for LedgifyBPO starts with a simple standard:
+                  listen carefully, understand what the team needs, and shape
+                  support around that context.
+                </p>
+                <p>
+                  The goal is a working relationship that feels close, clear,
+                  and genuinely useful to the people leading the business.
+                </p>
+                <div className={styles.signature}>
+                  <span>Naveed</span>
+                  <small>Co-Founder &amp; CEO</small>
+                </div>
+              </div>
             </article>
-            <article className={styles.panel}>
-              <h3>Care in the detail</h3>
-              <p>Give records and documentation the attention they need to support the work that follows.</p>
-            </article>
-            <article className={styles.panel}>
-              <h3>Collaboration</h3>
-              <p>Work with your team’s context and feedback, keeping business decisions with the people who own them.</p>
+
+            <article
+              className={`${styles.founderVision} ${styles.founderVisionReverse}`}
+              aria-labelledby="saud-vision-heading"
+            >
+              <div className={styles.visionPortrait}>
+                <span className={styles.visionIndex} aria-hidden="true">02</span>
+                <div className={styles.visionHalo} aria-hidden="true" />
+                <Image
+                  src="/images/founder-2-name.png"
+                  alt="Saud, Co-Founder and COO of LedgifyBPO"
+                  fill
+                  sizes="(max-width: 900px) 78vw, 440px"
+                  className={styles.visionPortraitImage}
+                />
+              </div>
+              <div className={styles.visionCopy}>
+                <p className="eyebrow">SAUD&apos;S VISION</p>
+                <h2 id="saud-vision-heading">
+                  Good support should feel dependable in the moments that matter.
+                </h2>
+                <p className={styles.visionStatement}>
+                  Saud&apos;s vision is for thoughtful support to show up in
+                  practice—through clear responsibilities, considered handoffs,
+                  and a way of working teams can follow.
+                </p>
+                <p>
+                  It is a practical standard: bring care to the details while
+                  keeping the wider needs of the business in view.
+                </p>
+                <div className={styles.signature}>
+                  <span>Saud</span>
+                  <small>Co-Founder &amp; COO</small>
+                </div>
+              </div>
             </article>
           </div>
-          <div className={styles.prose}>
-            <Link href="/why-ledgify-bpo" className="text-link">
-              See how our approach supports your business <ArrowRight size={17} aria-hidden="true" />
-            </Link>
-          </div>
-        </CompanySection>
+        </section>
 
-        <PageCTA
-          title="Tell us about the work behind your business."
-          description="Start with your current priorities and the support your team needs. We can explore where LedgifyBPO fits."
-        />
+        <section className={styles.meet} aria-labelledby="founders-heading">
+          <div className="container">
+            <header className={styles.sectionHeading}>
+              <p className="eyebrow">MEET THE FOUNDERS</p>
+              <h2 id="founders-heading">Two founders. One shared standard.</h2>
+              <p>
+                Choose a founder to explore the perspective each brings to
+                LedgifyBPO.
+              </p>
+            </header>
+            <AboutFounders />
+          </div>
+        </section>
+
+        <section className={styles.guides} aria-labelledby="guides-heading">
+          <div className="container">
+            <div className={styles.guidesIntro}>
+              <div>
+                <p className="eyebrow">WHAT GUIDES US</p>
+                <h2 id="guides-heading">The standard behind the work.</h2>
+              </div>
+              <p>
+                What Naveed and Saud believe good business support should look like.
+              </p>
+            </div>
+            <div className={styles.principleGrid}>
+              {principles.map(({ number, Icon, title, copy }) => (
+                <article key={title} className={styles.principle}>
+                  <div className={styles.principleTop}>
+                    <Icon size={22} strokeWidth={1.5} aria-hidden="true" />
+                    <span>{number}</span>
+                  </div>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.cta} aria-labelledby="cta-heading">
+          <div className={`container ${styles.ctaInner}`}>
+            <div>
+              <p className="eyebrow">A CONVERSATION WITH THE FOUNDERS&apos; TEAM</p>
+              <h2 id="cta-heading">Let&apos;s build something that works for your business.</h2>
+              <p>
+                Tell us what your team needs. We&apos;ll start by listening and shape
+                the conversation around your business.
+              </p>
+            </div>
+            <ConsultationButton>Start a Conversation</ConsultationButton>
+          </div>
+        </section>
       </main>
     </SiteShell>
   );

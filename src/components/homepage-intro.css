@@ -1,0 +1,156 @@
+/* Opt-in before first paint; no JS or an internal route leaves content usable. */
+html[data-homepage-intro] {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+  background: var(--accent-deep);
+}
+
+html[data-homepage-intro] body {
+  background: var(--accent-deep);
+}
+
+html[data-homepage-intro] .homepage-intro-content {
+  background: var(--background);
+}
+
+.homepage-intro {
+  display: none;
+}
+
+html[data-homepage-intro] .homepage-intro {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  touch-action: none;
+  color: var(--background);
+}
+
+.homepage-intro-panel {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  background: var(--accent-deep);
+  will-change: transform;
+  animation-duration: 2100ms;
+  animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+  animation-fill-mode: both;
+}
+
+.homepage-intro-top {
+  top: 0;
+  animation-name: homepage-intro-top;
+}
+
+.homepage-intro-bottom {
+  bottom: 0;
+  animation-name: homepage-intro-bottom;
+}
+
+/* Each half clips the same full-height composition. The horizontal seam
+   bisects the wordmark itself, not just the gap above the supporting line. */
+.homepage-intro-canvas {
+  position: absolute;
+  width: 100%;
+  height: 200%;
+  left: 0;
+}
+
+.homepage-intro-top .homepage-intro-canvas { top: 0; }
+.homepage-intro-bottom .homepage-intro-canvas { bottom: 0; }
+
+.homepage-intro-brand {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  padding-inline: 20px;
+  text-align: center;
+  transform: translateY(-50%);
+}
+
+.homepage-intro-wordmark {
+  display: block;
+  font-family: var(--font-heading), sans-serif;
+  font-size: clamp(34px, 9.8vw, 144px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.055em;
+  white-space: nowrap;
+  animation: homepage-intro-wordmark 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.homepage-intro-tagline {
+  position: absolute;
+  top: calc(100% + 18px);
+  left: 20px;
+  right: 20px;
+  font-size: clamp(11px, 1.15vw, 16px);
+  line-height: 1.6;
+  letter-spacing: 0.045em;
+  color: rgb(255 255 255 / 78%);
+  animation: homepage-intro-tagline 520ms cubic-bezier(0.22, 1, 0.36, 1) 130ms both;
+}
+
+html[data-homepage-intro] .homepage-intro-content .hero-enter {
+  animation: homepage-intro-content-in 440ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 1300ms !important;
+}
+html[data-homepage-intro] .homepage-intro-content .hero-copy > :nth-child(2) { animation-delay: 1390ms !important; }
+html[data-homepage-intro] .homepage-intro-content .hero-copy > :nth-child(3) { animation-delay: 1480ms !important; }
+html[data-homepage-intro] .homepage-intro-content .hero-copy > :nth-child(4) { animation-delay: 1570ms !important; }
+html[data-homepage-intro] .homepage-intro-content .hero-copy > :nth-child(5) { animation-delay: 1660ms !important; }
+
+html[data-homepage-intro] .homepage-intro-content .site-header {
+  animation: homepage-intro-content-in 500ms cubic-bezier(0.22, 1, 0.36, 1) 1200ms both;
+}
+html[data-homepage-intro] .homepage-intro-content .hero-slideshow {
+  animation: homepage-intro-visual-in 620ms cubic-bezier(0.22, 1, 0.36, 1) 1430ms both;
+}
+
+/* Removing the curtain must not restart the original hero entry keyframes. */
+.homepage-intro-content[data-intro-complete] .hero-enter,
+.homepage-intro-content[data-intro-complete] .hero-slideshow,
+.homepage-intro-content[data-intro-complete] .site-header {
+  animation: none;
+}
+
+@keyframes homepage-intro-top {
+  0%, 43% { transform: translateY(0); }
+  91%, 100% { transform: translateY(-100%); }
+}
+@keyframes homepage-intro-bottom {
+  0%, 43% { transform: translateY(0); }
+  91%, 100% { transform: translateY(100%); }
+}
+@keyframes homepage-intro-wordmark {
+  from { opacity: 0; transform: translateY(-65%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes homepage-intro-tagline {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes homepage-intro-content-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes homepage-intro-visual-in {
+  from { opacity: 0; transform: translateY(16px) scale(1.015); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-homepage-intro] { overflow: auto; }
+  html[data-homepage-intro] .homepage-intro { display: none; }
+  html[data-homepage-intro] .homepage-intro-content .hero-enter,
+  html[data-homepage-intro] .homepage-intro-content .hero-slideshow,
+  html[data-homepage-intro] .homepage-intro-content .site-header {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

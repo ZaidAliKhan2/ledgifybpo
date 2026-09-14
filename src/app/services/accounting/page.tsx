@@ -5,10 +5,7 @@ import {
   ServiceFAQ,
   ServiceHero,
   ServiceIntegrations,
-  ServiceOutcomes,
   ServiceProcess,
-  ServiceSpotlight,
-  ServiceWhy,
 } from "@/components/service-page";
 import { SiteShell } from "@/components/site";
 import { getServiceBySlug } from "@/lib/service-page-content";
@@ -24,10 +21,7 @@ export default function AccountingPage() {
         <ServiceHero service={service} />
         <ServiceCapabilities service={service} />
         <ServiceProcess content={service.page.process} theme={service.slug} />
-        <ServiceSpotlight content={service.page.spotlight} theme={service.slug} />
-        <ServiceOutcomes content={service.page.outcomes} />
         <ServiceIntegrations content={service.page.integrations} />
-        <ServiceWhy content={service.page.why} />
         <ServiceFAQ items={service.page.faq} serviceName={service.name} />
         <ServiceCTA content={service.page.cta} serviceName={service.name} />
       </main>

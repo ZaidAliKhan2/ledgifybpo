@@ -189,6 +189,25 @@ h2 {
 .desktop-nav a:hover {
   color: var(--accent);
 }
+.desktop-nav > a[data-current="page"],
+.services-trigger[data-current="page"],
+.industries-trigger[data-current="page"] {
+  position: relative;
+  color: var(--accent);
+  font-weight: 600;
+}
+.desktop-nav > a[data-current="page"]::after,
+.services-trigger[data-current="page"]::after,
+.industries-trigger[data-current="page"]::after {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent);
+  content: "";
+}
 .nav-actions {
   display: flex;
   align-items: center;
@@ -248,6 +267,12 @@ h2 {
 .services-dropdown-list a[data-active="true"] {
   background: var(--accent);
   color: #ffffff;
+}
+.services-dropdown-list a[data-current="page"] {
+  background: #e8e7fc;
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--accent);
 }
 .services-dropdown-preview {
   border-left: 1px solid var(--border);
@@ -2539,6 +2564,12 @@ h1 {
     padding: 13px;
     font-size: 14px;
   }
+  .mobile-nav > a[data-current="page"],
+  .mobile-accordion-trigger[data-current="page"] {
+    color: var(--accent);
+    font-weight: 600;
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
   .mobile-accordion-arrow {
     width: 16px;
     height: 16px;
@@ -2561,6 +2592,13 @@ h1 {
   }
   .mobile-accordion-panel a:hover {
     color: var(--accent);
+  }
+  .mobile-accordion-panel a[data-current="page"] {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
   }
   .nav-actions .button {
     gap: 17px;

@@ -1,145 +1,309 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { CompanySection, PageCTA, PageHero } from "@/components/company-page";
-import { SiteShell } from "@/components/site";
-import styles from "@/components/company-page.module.css";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  Building2,
+  Check,
+  ClipboardCheck,
+  Layers3,
+  Plus,
+  UsersRound,
+  Workflow,
+} from "lucide-react";
+import { SiOdoo, SiQuickbooks, SiSap, SiXero } from "react-icons/si";
+import { FaMicrosoft, FaSlack } from "react-icons/fa6";
+import { ConsultationButton, SiteShell } from "@/components/site";
+import { services } from "@/lib/content";
+import { servicePageContent } from "@/lib/service-page-content";
+import styles from "./why-page.module.css";
 
 export const metadata: Metadata = {
-  title: "Why LedgifyBPO | Back-Office Support for Your Team",
+  title: "Why LedgifyBPO | Business Support Built Around Your Team",
   description:
-    "Explore how LedgifyBPO works with your team through clear responsibilities, flexible support, existing workflows, and organized back-office operations.",
+    "Extend your team with bookkeeping, accounting, tax coordination, financial advisory, and HR support. Compare the approach and see how working with LedgifyBPO fits your operation.",
 };
+
+const reasons = [
+  {
+    Icon: UsersRound,
+    title: "A fit for your team",
+    copy: "Start with the responsibilities you need help with, and keep decisions with the right internal owners.",
+  },
+  {
+    Icon: Layers3,
+    title: "Room to adjust",
+    copy: "Review the scope and capacity together as transaction volumes, priorities, or workloads change.",
+  },
+  {
+    Icon: ClipboardCheck,
+    title: "Work you can follow",
+    copy: "Know who owns each task, what is ready for review, and which questions need your input.",
+  },
+  {
+    Icon: Workflow,
+    title: "Familiar systems",
+    copy: "Build on your existing records, tools, and approval processes so handoffs stay connected.",
+  },
+];
+
+const comparison = [
+  {
+    topic: "Getting started",
+    inHouse: "Recruit, onboard, and make time to train each new hire.",
+    ledgify: "Agree the work, responsibilities, and handoffs with a support partner.",
+  },
+  {
+    topic: "Ongoing commitment",
+    inHouse: "Manage salaries, benefits, equipment, and employment overhead.",
+    ledgify: "Scope support around the work you need, with terms agreed together.",
+  },
+  {
+    topic: "Changing workload",
+    inHouse: "Fit new demands around available headcount or additional hiring.",
+    ledgify: "Revisit capacity and priorities as your business needs change.",
+  },
+  {
+    topic: "Range of skills",
+    inHouse: "Develop specialist skills internally or recruit for additional roles.",
+    ledgify: "Coordinate support across finance, reporting, planning, and HR.",
+  },
+  {
+    topic: "Continuity",
+    inHouse: "Plan for leave, team changes, and knowledge transfer.",
+    ledgify: "Keep recurring work documented, with clear owners and review points.",
+  },
+];
+
+const steps = [
+  {
+    title: "Understand your operation",
+    copy: "Share your priorities, current workload, and the systems your team relies on.",
+  },
+  {
+    title: "Shape the right support",
+    copy: "Agree the scope, access, responsibilities, and outputs before work begins.",
+  },
+  {
+    title: "Build a working rhythm",
+    copy: "Coordinate tasks, review the work, and adjust the arrangement as needs evolve.",
+  },
+];
+
+const toolIcons = {
+  QuickBooks: SiQuickbooks,
+  Xero: SiXero,
+  SAP: SiSap,
+  Odoo: SiOdoo,
+  "Microsoft 365": FaMicrosoft,
+  Slack: FaSlack,
+};
+
+const workflowTools = [
+  ...servicePageContent.accounting.integrations.items,
+  ...servicePageContent["remote-hr-services"].integrations.items.filter(
+    (tool) => tool.name === "Microsoft 365" || tool.name === "Slack",
+  ),
+];
+
+function SectionHeading({ eyebrow, title, id }: { eyebrow: string; title: string; id: string }) {
+  return (
+    <header className={styles.heading}>
+      <p className="eyebrow">{eyebrow}</p>
+      <h2 id={id}>{title}</h2>
+    </header>
+  );
+}
 
 export default function WhyLedgifyBPOPage() {
   return (
     <SiteShell>
-      <main id="main">
-        <PageHero
-          eyebrow="WHY LEDGIFYBPO"
-          title="Support that makes the work easier to manage."
-          description="Choosing a back-office partner is also choosing how work moves between teams. Our approach brings responsibilities, records, and communication into a process your business can follow."
-        />
+      <main id="main" className={styles.page}>
+        <section className={styles.hero} aria-labelledby="why-heading">
+          <div className={`container ${styles.heroGrid}`}>
+            <div className={styles.heroCopy}>
+              <p className="eyebrow">WHY LEDGIFYBPO</p>
+              <h1 id="why-heading">More support.<br />More room to lead.</h1>
+              <p className={styles.intro}>
+                Bring finance and people administration into a clear working
+                rhythm. We take on defined responsibilities so your team can
+                focus on the decisions and relationships that move the business forward.
+              </p>
+              <div className={styles.heroActions}>
+                <ConsultationButton />
+                <Link href="#compare" className="text-link">
+                  Compare the approach <ArrowDown size={15} aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
 
-        <CompanySection id="why-work-with-us" eyebrow="THE PRACTICAL DIFFERENCE" title="Make room for the work that needs your team.">
-          <div className={styles.cards}>
-            <article className={styles.panel}>
-              <h3>Ownership of recurring tasks</h3>
-              <p>Give routine finance and administrative work a defined place, with clear inputs and agreed review points.</p>
-            </article>
-            <article className={styles.panel}>
-              <h3>Information with context</h3>
-              <p>Connect records and reports to the questions your team needs to resolve, so information is easier to act on.</p>
-            </article>
-            <article className={styles.panel}>
-              <h3>Connected handoffs</h3>
-              <p>Keep requests, supporting documents, and next actions together as work moves between internal owners and external support.</p>
-            </article>
+            <div
+              className={styles.partnership}
+              role="img"
+              aria-label="Your team leads on customers, people, and decisions. LedgifyBPO supports bookkeeping, accounting and reporting, tax, advisory, and HR through shared priorities and clear responsibilities."
+            >
+              <div aria-hidden="true">
+                <div className={styles.teamCard}>
+                  <div className={styles.cardTitle}>
+                    <UsersRound size={22} />
+                    <strong>Your team</strong>
+                  </div>
+                  <p>More space for what you lead.</p>
+                  <div className={styles.teamPriorities}>
+                    <span>Customers</span><span>People</span><span>Decisions</span>
+                  </div>
+                </div>
+                <div className={styles.connection}><Plus size={19} /></div>
+                <div className={styles.partnerCard}>
+                  <div className={styles.partnerTitle}>
+                    <strong>LEDGIFYBPO</strong><Layers3 size={23} />
+                  </div>
+                  <p>The support behind your operation.</p>
+                  <ul>
+                    {services.map((service) => (
+                      <li key={service.slug}><Check size={14} />{service.name}</li>
+                    ))}
+                  </ul>
+                </div>
+                <p className={styles.partnershipNote}>Shared priorities. Clear responsibilities.</p>
+              </div>
+            </div>
           </div>
-        </CompanySection>
+        </section>
 
-        <CompanySection
-          id="client-collaboration"
-          eyebrow="WORKING TOGETHER"
-          title="Know what to expect from the relationship."
-          tone="muted"
-        >
-          <ol className={styles.steps}>
-            <li>
-              <h3>Set the scope together</h3>
-              <p>Identify the tasks to be supported, the outputs your team needs, and the information required to begin.</p>
-            </li>
-            <li>
-              <h3>Agree communication and review</h3>
-              <p>Establish who supplies information, who reviews the work, and how questions and exceptions reach the right person.</p>
-            </li>
-            <li>
-              <h3>Keep the process useful</h3>
-              <p>Use feedback from completed work to refine handoffs and revisit priorities as the operating context changes.</p>
-            </li>
-          </ol>
-        </CompanySection>
-
-        <CompanySection id="flexible-support" eyebrow="FLEXIBLE SUPPORT" title="Start with the need in front of you.">
-          <div className={styles.columns}>
-            <article className={styles.panel}>
-              <h3>Support for a defined workload</h3>
-              <p>
-                A business may need help with a recurring bookkeeping process,
-                close preparation, or employee administration. Begin with a clear
-                area of responsibility and the handoffs around it.
-              </p>
-            </article>
-            <article className={styles.panel}>
-              <h3>Room to revisit the scope</h3>
-              <p>
-                As priorities or transaction volumes change, review the workload
-                together and agree any adjustments to tasks, capacity, and review
-                needs. Additional support starts with a shared understanding of
-                what is required.
-              </p>
-            </article>
+        <section className={styles.reasons} aria-labelledby="reasons-heading">
+          <div className="container">
+            <SectionHeading eyebrow="THE PRACTICAL DIFFERENCE" title="A working relationship built to fit." id="reasons-heading" />
+            <div className={styles.reasonGrid}>
+              {reasons.map(({ Icon, title, copy }) => (
+                <article key={title}>
+                  <Icon size={23} strokeWidth={1.6} aria-hidden="true" />
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                </article>
+              ))}
+            </div>
           </div>
-        </CompanySection>
+        </section>
 
-        <CompanySection id="existing-workflows" eyebrow="YOUR SYSTEMS & WORKFLOWS" title="Build on how your team already works." tone="muted">
-          <div className={styles.columns}>
-            <div className={styles.prose}>
+        <section className={styles.comparison} id="compare" aria-labelledby="comparison-heading">
+          <div className="container">
+            <div className={styles.comparisonIntro}>
+              <SectionHeading eyebrow="TWO WAYS TO BUILD CAPACITY" title="Build in-house. Or extend your team." id="comparison-heading" />
               <p>
-                Your tools hold more than data: they hold the working habits and
-                context of your team. We start by understanding those systems and
-                how information moves through them.
-              </p>
-              <p>
-                The scope can draw on accounting platforms such as QuickBooks and
-                Xero, and document or communication tools such as Microsoft 365
-                and Slack. The tools used depend on the service and the workflow
-                agreed with your business.
+                The right mix depends on your business. Here is how the two
+                approaches differ in practice.
               </p>
             </div>
-            <article className={styles.panel}>
-              <h3>Agree the working setup</h3>
+            <div className={styles.comparisonGrid}>
+              <article className={styles.inHouse}>
+                <header>
+                  <Building2 size={25} strokeWidth={1.5} aria-hidden="true" />
+                  <h3>Building in-house</h3>
+                  <p>Grow the roles inside your business.</p>
+                </header>
+                <ul>
+                  {comparison.map((row) => (
+                    <li key={row.topic}>
+                      <span className={styles.comparisonIcon}><Plus size={15} aria-hidden="true" /></span>
+                      <div><h4>{row.topic}</h4><p>{row.inHouse}</p></div>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+              <article className={styles.withLedgify}>
+                <header>
+                  <Layers3 size={25} strokeWidth={1.5} aria-hidden="true" />
+                  <h3>Working with LedgifyBPO</h3>
+                  <p>Add support around your existing team.</p>
+                </header>
+                <ul>
+                  {comparison.map((row) => (
+                    <li key={row.topic}>
+                      <span className={styles.comparisonIcon}><Check size={15} aria-hidden="true" /></span>
+                      <div><h4>{row.topic}</h4><p>{row.ledgify}</p></div>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            </div>
+            <p className={styles.comparisonNote}>
+              Your team retains business decisions and approvals. Services,
+              capacity, and responsibilities are agreed for your engagement.
+            </p>
+          </div>
+        </section>
+
+        <section className={styles.process} aria-labelledby="process-heading">
+          <div className="container">
+            <SectionHeading eyebrow="WORKING TOGETHER" title="A clear start. A connected way of working." id="process-heading" />
+            <ol className={styles.steps}>
+              {steps.map((step, index) => (
+                <li key={step.title}>
+                  <span className={styles.stepNumber}>0{index + 1}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.copy}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section className={styles.tools} aria-labelledby="tools-heading">
+          <div className={`container ${styles.toolsGrid}`}>
+            <div>
+              <SectionHeading eyebrow="YOUR EXISTING WORKFLOW" title="The tools you know. The support you need." id="tools-heading" />
+              <p>We agree the setup around your systems, records, and approved access.</p>
+            </div>
+            <ul className={styles.toolList}>
+              {workflowTools.map((tool) => {
+                const Icon = toolIcons[tool.name as keyof typeof toolIcons] ?? Workflow;
+                return (
+                  <li key={tool.name}><Icon aria-hidden="true" /><span>{tool.name}</span></li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+
+        {/* Homepage quotes are illustrative, not verified client evidence.
+            Use the existing company identity and approach as a concise trust section. */}
+        <section className={styles.proof} aria-labelledby="proof-heading">
+          <div className={`container ${styles.proofGrid}`}>
+            <div>
+              <p className="eyebrow">THE PEOPLE BEHIND THE WORK</p>
+              <h2 id="proof-heading">A partner you can get to know.</h2>
               <p>
-                Identify the source records, approved access, document locations,
-                and internal owners before assigning the work. Keep approvals and
-                business decisions connected to the people responsible for them.
+                LedgifyBPO is led by co-founders Naveed, CEO, and Saud, COO.
+                Our approach starts with understanding your operation and agreeing
+                how the work will be reviewed.
               </p>
-            </article>
+              <Link href="/about" className="text-link">
+                Meet LedgifyBPO <ArrowUpRight size={17} aria-hidden="true" />
+              </Link>
+            </div>
+            <div className={styles.proofDetail}>
+              <ClipboardCheck size={27} strokeWidth={1.5} aria-hidden="true" />
+              <h3>Clarity from the first conversation.</h3>
+              <p>Talk through the scope, the people involved, and the handoffs your team needs before deciding how to work together.</p>
+              <Link href="/services" className="text-link">
+                Explore our services <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
           </div>
-        </CompanySection>
+        </section>
 
-        <CompanySection id="operational-visibility" eyebrow="ORGANIZATION & VISIBILITY" title="See the work and what it needs next.">
-          <div className={styles.cards}>
-            <article className={styles.panel}>
-              <h3>Organized inputs</h3>
-              <p>A consistent place for records and supporting documents makes preparation and follow-up easier.</p>
-            </article>
-            <article className={styles.panel}>
-              <h3>Visible open items</h3>
-              <p>Questions and missing information stay connected to an owner and a next action.</p>
-            </article>
-            <article className={styles.panel}>
-              <h3>Useful handovers</h3>
-              <p>Completed work carries its supporting context into review, reporting, and the next operating cycle.</p>
-            </article>
+        <section className={styles.cta} aria-labelledby="cta-heading">
+          <div className={`container ${styles.ctaPanel}`}>
+            <div>
+              <p className="eyebrow">LET&apos;S TALK</p>
+              <h2 id="cta-heading">Build the support your business needs next.</h2>
+              <p>Start with the work on your plate. We&apos;ll explore where LedgifyBPO can help.</p>
+            </div>
+            <ConsultationButton />
           </div>
-        </CompanySection>
-
-        {/* Add client evidence here when verified stories are available.
-            The homepage currently contains explicitly illustrative testimonials. */}
-        <CompanySection id="people-behind-the-work" eyebrow="MEET LEDGIFYBPO" title="Get to know the people behind the approach." tone="muted">
-          <div className={styles.prose}>
-            <p>Learn about LedgifyBPO’s founders, the work we support, and the principles that guide our collaboration with businesses.</p>
-            <Link href="/about" className="text-link">
-              About LedgifyBPO <ArrowRight size={17} aria-hidden="true" />
-            </Link>
-          </div>
-        </CompanySection>
-
-        <PageCTA
-          title="Explore what a workable partnership looks like."
-          description="Tell us where recurring tasks or handoffs are putting pressure on your team. We can discuss the responsibilities and support that would help."
-        />
+        </section>
       </main>
     </SiteShell>
   );

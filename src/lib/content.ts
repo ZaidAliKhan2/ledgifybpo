@@ -187,6 +187,15 @@ export const industries = [
     image: "/images/industries/ecommerce.jpeg",
     description: "Clear books across every storefront, sale, and payout.",
     featured: true,
+    headline: "Keep every sale, fee, and payout connected.",
+    introduction:
+      "We organize the high-volume financial detail behind online commerce so your team can see beyond the transaction feed.",
+    capabilities: [
+      "Multi-channel transaction bookkeeping",
+      "Payout and processor reconciliation",
+      "Expense and cost categorization",
+      "Consistent performance reporting",
+    ],
   },
   {
     name: "Construction",
@@ -194,6 +203,15 @@ export const industries = [
     image: "/images/industries/construction.jpg",
     description: "Know your costs and keep every project accounted for.",
     featured: true,
+    headline: "See the cost picture behind every project.",
+    introduction:
+      "We help construction teams keep project activity, vendor records, and financial reporting organized as work moves forward.",
+    capabilities: [
+      "Project and job cost organization",
+      "Vendor and subcontractor records",
+      "Expense categorization and reconciliation",
+      "Project and management reporting",
+    ],
   },
   {
     name: "Real Estate",
@@ -202,6 +220,15 @@ export const industries = [
     description:
       "A clear financial picture of every property in your portfolio.",
     featured: true,
+    headline: "Know what each property is contributing.",
+    introduction:
+      "We structure the records behind individual properties and portfolios, keeping income, expenses, and reporting easier to review.",
+    capabilities: [
+      "Property-level bookkeeping",
+      "Income and expense tracking",
+      "Bank and loan reconciliations",
+      "Property and portfolio reporting",
+    ],
   },
   {
     name: "Restaurants",
@@ -209,6 +236,15 @@ export const industries = [
     image: "/images/industries/restaurant.jpeg",
     description: "Keep your books in order, from the kitchen to the close.",
     featured: true,
+    headline: "Bring order to every sale and supplier bill.",
+    introduction:
+      "We coordinate the recurring financial inputs behind restaurant operations, from daily activity to the monthly close.",
+    capabilities: [
+      "Daily sales organization",
+      "Food and operating expense tracking",
+      "Bank and card reconciliations",
+      "Payroll input coordination",
+    ],
   },
   {
     name: "Non-profits",
@@ -217,6 +253,15 @@ export const industries = [
     description:
       "Structured records and reporting support for mission-focused organizations.",
     featured: false,
+    headline: "Keep funding and spending easier to trace.",
+    introduction:
+      "We support the financial and administrative routines that help mission-focused teams maintain organized records and useful reports.",
+    capabilities: [
+      "Donation and funding records",
+      "Program and operating expenses",
+      "Reconciliations and source documents",
+      "Recurring reporting support",
+    ],
   },
   {
     name: "Trucking",
@@ -225,6 +270,15 @@ export const industries = [
     description:
       "Organized bookkeeping for fleet expenses, settlements, and day-to-day operations.",
     featured: false,
+    headline: "A clearer financial lane for every mile.",
+    introduction:
+      "We bring fleet expenses, settlement records, and recurring bookkeeping into one dependable operating rhythm.",
+    capabilities: [
+      "Fuel and operating expense tracking",
+      "Driver and settlement records",
+      "Bookkeeping and reconciliations",
+      "Fleet-level financial reporting",
+    ],
   },
   {
     name: "Legal Services",
@@ -232,6 +286,15 @@ export const industries = [
     image: "/images/industries/legal-services.png",
     description: "Clear financial workflows for professional legal practices.",
     featured: false,
+    headline: "Financial workflows that respect client work.",
+    introduction:
+      "We keep routine bookkeeping and billing-related administration organized so the firm can stay focused on its professional responsibilities.",
+    capabilities: [
+      "Recurring bookkeeping and reconciliation",
+      "Billing-related administration",
+      "Expense and vendor records",
+      "Clear financial reporting",
+    ],
   },
   {
     name: "Healthcare & Medicare",
@@ -240,14 +303,32 @@ export const industries = [
     description:
       "Organized finance and administrative support for healthcare-focused operations.",
     featured: false,
+    headline: "Back-office order for busy healthcare operations.",
+    introduction:
+      "We support the financial and administrative workflows behind healthcare-focused businesses without adding another layer of complexity.",
+    capabilities: [
+      "Financial record organization",
+      "Administrative workflow support",
+      "Expense tracking and reconciliations",
+      "Management reporting",
+    ],
   },
   {
     name: "IT Consultation",
     slug: "it-consultation",
     image: "/images/industries/it-consultation.png",
     description:
-      "Strategic IT guidance, technology planning, and operational support for modern businesses.",
+      "Financial and back-office support for firms that provide IT consulting services.",
     featured: true,
+    headline: "Back-office clarity for client-focused IT firms.",
+    introduction:
+      "We support IT consulting businesses with the bookkeeping, reporting, and operational administration behind project delivery.",
+    capabilities: [
+      "Project and client financial organization",
+      "Recurring bookkeeping",
+      "Billing and expense workflows",
+      "Reporting and back-office support",
+    ],
   },
   {
     name: "B2B Back Office",
@@ -256,6 +337,15 @@ export const industries = [
     description:
       "Flexible operational support for small businesses, growing teams, and larger organizations.",
     featured: true,
+    headline: "Back-office support that scales with your operation.",
+    introduction:
+      "We build practical support around the needs of small companies, growing businesses, and larger organizations with established workflows.",
+    capabilities: [
+      "Bookkeeping and reporting support",
+      "Accounts payable and receivable coordination",
+      "Process documentation and administration",
+      "Flexible capacity as needs change",
+    ],
   },
 ];
 export const values = [

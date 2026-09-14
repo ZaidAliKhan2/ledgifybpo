@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Libre_Franklin, Inter } from "next/font/google";
+import { HomepageIntroBootstrap } from "@/components/homepage-intro-bootstrap";
 import "./globals.css";
 
 const heading = Libre_Franklin({
@@ -24,8 +25,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${heading.variable} ${body.variable} antialiased`}>
+        <HomepageIntroBootstrap />
         {children}
       </body>
     </html>

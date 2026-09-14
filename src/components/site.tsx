@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   ArrowRight,
   ArrowDown,
@@ -20,20 +21,73 @@ import {
 } from "react";
 import { services, industries } from "@/lib/content";
 
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/xppzvygw";
+
+const navigationItems = [
+  {
+    label: "Services",
+    href: "/#services",
+    activePath: "/services",
+    includeDescendants: true,
+  },
+  {
+    label: "Industries",
+    href: "/#industries",
+    activePath: "/industries",
+    includeDescendants: false,
+  },
+  {
+    label: "Why LedgifyBPO",
+    href: "/why-ledgify-bpo",
+    activePath: "/why-ledgify-bpo",
+    includeDescendants: false,
+  },
+  {
+    label: "About Us",
+    href: "/about",
+    activePath: "/about",
+    includeDescendants: false,
+  },
+  {
+    label: "Careers",
+    href: "/careers",
+    activePath: "/careers",
+    includeDescendants: false,
+  },
+] as const;
+
+function matchesPathname(
+  pathname: string,
+  activePath: string,
+  includeDescendants = false,
+) {
+  const normalizedPathname =
+    pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
+
+  return (
+    normalizedPathname === activePath ||
+    (includeDescendants && normalizedPathname.startsWith(`${activePath}/`))
+  );
+}
+
 const ConsultationContext = createContext<(service?: string) => void>(() => {});
 type ConsultationPayload = {
   name: string;
   email: string;
   company: string;
-  services: string[];
-  service: string;
+  services: string;
   message: string;
-  website: string;
+  _gotcha: string;
+};
+type FormspreeResponse = {
+  error?: string;
+  errors?: { message?: string }[];
 };
 export function Logo({ decorative = false }: { decorative?: boolean }) {
   return (
     <Image
       src="/images/logo.png"
+      unoptimized
       width={200}
       height={38}
       style={{ height: "auto" }}
@@ -62,15 +116,17 @@ export function ConsultationButton({
 }
 
 export function SiteShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [mobileIndustriesOpen, setMobileIndustriesOpen] = useState(false);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [submittedServiceSummary, setSubmittedServiceSummary] = useState("");
   const [serviceError, setServiceError] = useState("");
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [hoveredServiceSlug, setHoveredServiceSlug] = useState<
-    (typeof services)[number]["slug"]
-  >(services[0].slug);
+    (typeof services)[number]["slug"] | null
+  >(null);
   const [industriesDropdownOpen, setIndustriesDropdownOpen] = useState(false);
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
@@ -79,6 +135,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
+  const submissionInFlight = useRef(false);
+  const currentServiceSlug = services.find((service) =>
+    matchesPathname(pathname, `/services/${service.slug}`),
+  )?.slug;
+  const previewedServiceSlug =
+    hoveredServiceSlug ?? currentServiceSlug ?? services[0].slug;
 
   function open(service?: string) {
     returnFocus.current = document.activeElement as HTMLElement;
@@ -88,6 +150,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         : [],
     );
     setServiceError("");
+    setSubmittedServiceSummary("");
     setStatus("idle");
     setError("");
     setMobileOpen(false);
@@ -108,48 +171,68 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submissionInFlight.current || status === "sending") return;
     if (selectedServices.length === 0) {
       setServiceError("Choose at least one service.");
       return;
     }
+    submissionInFlight.current = true;
     setStatus("sending");
     setServiceError("");
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const read = (key: string) => String(formData.get(key) ?? "");
+    const serviceSummary = selectedServices.join(", ");
     const data: ConsultationPayload = {
-      name: read("name"),
-      email: read("email"),
-      company: read("company"),
-      services: selectedServices,
-      service: selectedServices.join(", "),
-      message: read("message"),
-      website: read("website"),
+      name: read("name").trim(),
+      email: read("email").trim(),
+      company: read("company").trim(),
+      services: serviceSummary,
+      message: read("message").trim(),
+      _gotcha: read("_gotcha"),
     };
     try {
-      const response = await fetch("/api/consultations", {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Please try again.");
+      const result = (await response
+        .json()
+        .catch(() => null)) as FormspreeResponse | null;
+
+      if (!response.ok) {
+        const responseError = result?.errors
+          ?.map(({ message }) => message)
+          .filter(Boolean)
+          .join(" ");
+        const fallback =
+          response.status === 429
+            ? "Too many requests were sent. Please wait a moment and try again."
+            : "Your request could not be sent. Please try again.";
+
+        throw new Error(responseError || result?.error || fallback);
+      }
+
+      setSubmittedServiceSummary(serviceSummary);
+      form.reset();
+      setSelectedServices([]);
       setStatus("success");
     } catch (err) {
       setStatus("error");
       setError(
         err instanceof Error
           ? err.message
-          : "Your request could not be saved. Please try again.",
+          : "Your request could not be sent. Please try again.",
       );
+    } finally {
+      submissionInFlight.current = false;
     }
   }
 
-  const links = [
-    ["Services", "/#services"],
-    ["Industries", "/#industries"],
-    ["Why LedgifyBPO", "/why-ledgify-bpo"],
-    ["About Us", "/about"],
-  ];
   return (
     <ConsultationContext.Provider value={open}>
       <a className="skip-link" href="#main">
@@ -161,39 +244,66 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Logo />
           </Link>
           <nav className="desktop-nav" aria-label="Main navigation">
-            {links.map(([label, href]) =>
-              label === "Services" ? (
+            {navigationItems.map((item) => {
+              const isCurrent = matchesPathname(
+                pathname,
+                item.activePath,
+                item.includeDescendants,
+              );
+
+              return item.label === "Services" ? (
                 <div
-                  key={label}
+                  key={item.label}
                   className="services-nav-item"
                   onMouseEnter={() => setServicesDropdownOpen(true)}
-                  onMouseLeave={() => setServicesDropdownOpen(false)}
+                  onMouseLeave={() => {
+                    setServicesDropdownOpen(false);
+                    setHoveredServiceSlug(null);
+                  }}
                 >
-                  <Link href="/#services" className="services-trigger">
+                  <Link
+                    href={item.href}
+                    className="services-trigger"
+                    aria-current={isCurrent ? "page" : undefined}
+                    data-current={isCurrent ? "page" : undefined}
+                  >
                     Services <ArrowDown className="services-trigger-arrow" />
                   </Link>
 
                   {servicesDropdownOpen && (
                     <div className="services-dropdown">
                       <div className="services-dropdown-list">
-                        {services.map((service) => (
-                          <Link
-                            key={service.slug}
-                            href={`/services/${service.slug}`}
-                            onMouseEnter={() =>
-                              setHoveredServiceSlug(service.slug)
-                            }
-                            data-active={hoveredServiceSlug === service.slug}
-                          >
-                            {service.name}
-                          </Link>
-                        ))}
+                        {services.map((service) => {
+                          const isCurrentService = matchesPathname(
+                            pathname,
+                            `/services/${service.slug}`,
+                          );
+
+                          return (
+                            <Link
+                              key={service.slug}
+                              href={`/services/${service.slug}`}
+                              onMouseEnter={() =>
+                                setHoveredServiceSlug(service.slug)
+                              }
+                              data-active={previewedServiceSlug === service.slug}
+                              aria-current={
+                                isCurrentService ? "page" : undefined
+                              }
+                              data-current={
+                                isCurrentService ? "page" : undefined
+                              }
+                            >
+                              {service.name}
+                            </Link>
+                          );
+                        })}
                       </div>
 
                       <div className="services-dropdown-preview">
                         {(() => {
                           const active = services.find(
-                            (s) => s.slug === hoveredServiceSlug,
+                            (s) => s.slug === previewedServiceSlug,
                           );
                           return (
                             <>
@@ -216,14 +326,19 @@ export function SiteShell({ children }: { children: ReactNode }) {
                     </div>
                   )}
                 </div>
-              ) : label === "Industries" ? (
+              ) : item.label === "Industries" ? (
                 <div
-                  key={label}
+                  key={item.label}
                   className="industries-nav-item"
                   onMouseEnter={() => setIndustriesDropdownOpen(true)}
                   onMouseLeave={() => setIndustriesDropdownOpen(false)}
                 >
-                  <Link href="/#industries" className="industries-trigger">
+                  <Link
+                    href={item.href}
+                    className="industries-trigger"
+                    aria-current={isCurrent ? "page" : undefined}
+                    data-current={isCurrent ? "page" : undefined}
+                  >
                     Industries
                     <ArrowDown
                       className="industries-trigger-arrow"
@@ -245,11 +360,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   )}
                 </div>
               ) : (
-                <Link key={label} href={href}>
-                  {label}
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  aria-current={isCurrent ? "page" : undefined}
+                  data-current={isCurrent ? "page" : undefined}
+                >
+                  {item.label}
                 </Link>
-              ),
-            )}
+              );
+            })}
           </nav>
           <div className="nav-actions">
             <ConsultationButton>Let&apos;s Talk</ConsultationButton>
@@ -271,10 +391,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
             className="mobile-nav"
             aria-label="Mobile navigation"
           >
-            {links.map(([label, href]) => {
-              if (label === "Services") {
+            {navigationItems.map((item) => {
+              const isCurrent = matchesPathname(
+                pathname,
+                item.activePath,
+                item.includeDescendants,
+              );
+
+              if (item.label === "Services") {
                 return (
-                  <div key={label} className="mobile-accordion">
+                  <div key={item.label} className="mobile-accordion">
                     <button
                       type="button"
                       className="mobile-accordion-trigger"
@@ -282,6 +408,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
                         setMobileServicesOpen(!mobileServicesOpen)
                       }
                       aria-expanded={mobileServicesOpen}
+                      aria-current={isCurrent ? "page" : undefined}
+                      data-current={isCurrent ? "page" : undefined}
                     >
                       Services
                       <ArrowDown
@@ -294,23 +422,36 @@ export function SiteShell({ children }: { children: ReactNode }) {
                     </button>
                     {mobileServicesOpen && (
                       <div className="mobile-accordion-panel">
-                        {services.map((service) => (
-                          <Link
-                            key={service.slug}
-                            href={`/services/${service.slug}`}
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            {service.name}
-                          </Link>
-                        ))}
+                        {services.map((service) => {
+                          const isCurrentService = matchesPathname(
+                            pathname,
+                            `/services/${service.slug}`,
+                          );
+
+                          return (
+                            <Link
+                              key={service.slug}
+                              href={`/services/${service.slug}`}
+                              onClick={() => setMobileOpen(false)}
+                              aria-current={
+                                isCurrentService ? "page" : undefined
+                              }
+                              data-current={
+                                isCurrentService ? "page" : undefined
+                              }
+                            >
+                              {service.name}
+                            </Link>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
                 );
               }
-              if (label === "Industries") {
+              if (item.label === "Industries") {
                 return (
-                  <div key={label} className="mobile-accordion">
+                  <div key={item.label} className="mobile-accordion">
                     <button
                       type="button"
                       className="mobile-accordion-trigger"
@@ -318,6 +459,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
                         setMobileIndustriesOpen(!mobileIndustriesOpen)
                       }
                       aria-expanded={mobileIndustriesOpen}
+                      aria-current={isCurrent ? "page" : undefined}
+                      data-current={isCurrent ? "page" : undefined}
                     >
                       Industries
                       <ArrowDown
@@ -346,11 +489,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
               }
               return (
                 <Link
-                  key={label}
-                  href={href}
+                  key={item.label}
+                  href={item.href}
                   onClick={() => setMobileOpen(false)}
+                  aria-current={isCurrent ? "page" : undefined}
+                  data-current={isCurrent ? "page" : undefined}
                 >
-                  {label}
+                  {item.label}
                 </Link>
               );
             })}
@@ -497,8 +642,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
             </span>
             <h2 id="consultation-title">Request received.</h2>
             <p>
-              Your consultation request for {selectedServices.join(", ")} has
-              been saved. Thank you for getting in touch.
+              Your consultation request for {submittedServiceSummary} has been
+              sent. Thank you for getting in touch.
             </p>
             <button className="button" onClick={close}>
               Done <ArrowRight size={17} />
@@ -594,7 +739,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <div className="honeypot" aria-hidden="true">
                 <label>
                   Website
-                  <input name="website" tabIndex={-1} autoComplete="off" />
+                  <input name="_gotcha" tabIndex={-1} autoComplete="off" />
                 </label>
               </div>
               {status === "error" && (
