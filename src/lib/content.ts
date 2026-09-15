@@ -348,6 +348,28 @@ export const industries = [
     ],
   },
 ];
+
+export const founders = [
+  {
+    id: "saud",
+    name: "Saud",
+    title: "CEO",
+    role: "Co-Founder & CEO",
+    image: "/images/founder-2-name.png",
+    introduction:
+      "Saud is a co-founder of LedgifyBPO and serves as its CEO. He co-founded the company with Naveed, its CFO.",
+  },
+  {
+    id: "naveed",
+    name: "Naveed",
+    title: "CFO",
+    role: "Co-Founder & CFO",
+    image: "/images/founder-1-name.png",
+    introduction:
+      "Naveed is a co-founder of LedgifyBPO and serves as its CFO. He co-founded the company with Saud, its CEO.",
+  },
+] as const;
+
 export const values = [
   {
     title: "Save Time, Gain Focus",

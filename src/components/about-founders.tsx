@@ -3,25 +3,10 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import styles from "@/app/about/about-page.module.css";
-
-const founders = [
-  {
-    id: "naveed",
-    name: "Naveed",
-    role: "Co-Founder & CEO",
-    image: "/images/founder-1-name.png",
-    introduction: "Naveed is a co-founder of LedgifyBPO and serves as its CEO. He co-founded the company with Saud, its COO.",
-  },
-  {
-    id: "saud",
-    name: "Saud",
-    role: "Co-Founder & COO",
-    image: "/images/founder-2-name.png",
-    introduction: "Saud is a co-founder of LedgifyBPO and serves as its COO. He co-founded the company with Naveed, its CEO.",
-  },
-] as const;
+import { founders } from "@/lib/content";
 
 type FounderId = (typeof founders)[number]["id"];
+const aboutFounders = [founders[1], founders[0]] as const;
 
 export function AboutFounders() {
   const [selectedId, setSelectedId] = useState<FounderId | null>(null);
@@ -53,7 +38,7 @@ export function AboutFounders() {
         setPreviewId(null);
       }}
     >
-      {founders.map((founder, index) => {
+      {aboutFounders.map((founder, index) => {
         const active = founder.id === activeId;
         return (
           <div
@@ -88,7 +73,7 @@ export function AboutFounders() {
                 } else if (event.key === "Home") {
                   next = 0;
                 } else if (event.key === "End") {
-                  next = founders.length - 1;
+                  next = aboutFounders.length - 1;
                 } else if (event.key === "Escape") {
                   cancelHover();
                   setPreviewId(null);
@@ -98,8 +83,8 @@ export function AboutFounders() {
                   return;
                 }
                 event.preventDefault();
-                select(founders[next].id);
-                document.getElementById(founders[next].id + "-selector")?.focus();
+                select(aboutFounders[next].id);
+                document.getElementById(aboutFounders[next].id + "-selector")?.focus();
               }}
             >
               <span className={styles.cardPortrait}>

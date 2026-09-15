@@ -8,6 +8,8 @@
   --background: #ffffff;
   --text-secondary: #64748b;
   --border: #e2e8f0;
+  --site-header-height: 88px;
+  --anchor-scroll-gap: 20px;
 }
 @theme inline {
   --font-sans: var(--font-body);
@@ -17,7 +19,7 @@
 }
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 28px;
+  scroll-padding-top: calc(var(--site-header-height) + var(--anchor-scroll-gap));
 }
 body {
   margin: 0;
@@ -158,8 +160,14 @@ h2 {
 .site-header {
   border-bottom: 1px solid var(--border);
   background: var(--background);
-  position: relative;
-  z-index: 10;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+#services,
+#industries {
+  scroll-margin-top: calc(var(--site-header-height) + var(--anchor-scroll-gap));
 }
 .nav-inner {
   display: flex;
@@ -1400,6 +1408,9 @@ h1 {
   display: flex;
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scrollbar-width: none;
@@ -1415,13 +1426,19 @@ h1 {
   grid-template-columns: repeat(var(--cards-per-page), minmax(0, 1fr));
   flex: 0 0 100%;
   gap: 20px;
-  min-width: 0;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 .industry-card {
   position: relative;
+  width: 100%;
   min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   border-radius: 12px;
   min-height: 423px;
   overflow: hidden;
@@ -1533,6 +1550,11 @@ h1 {
 .industry-pagination button.active {
   width: 38px;
   background: var(--accent);
+}
+@media (min-width: 768px) and (max-width: 1099px) {
+  .industry-page {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 .section-bottom-link {
   display: flex;
@@ -2106,6 +2128,25 @@ h1 {
 .footer-link:hover {
   opacity: 1;
 }
+.footer-offices {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+.footer-office-label {
+  color: var(--background);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+.footer-office-location {
+  display: block;
+  margin-top: 6px;
+  color: var(--border);
+  font-size: 11px;
+  line-height: 1.6;
+  opacity: 0.65;
+}
 .footer-bottom {
   border-top: 1px solid color-mix(in srgb, var(--background) 14%, transparent);
   padding-block: 23px;
@@ -2432,9 +2473,6 @@ h1 {
   .value-item h3 {
     font-size: 16px;
   }
-  .industry-card {
-    flex-basis: clamp(270px, 42vw, 450px);
-  }
   .widget-main {
     left: 22px;
   }
@@ -2512,6 +2550,9 @@ h1 {
   }
 }
 @media (max-width: 767px) {
+  :root {
+    --site-header-height: 76px;
+  }
   .container {
     width: calc(100% - 40px);
   }
@@ -2716,12 +2757,29 @@ h1 {
   .industry-carousel {
     padding-inline: 0;
   }
-  .industry-page {
-    flex-basis: 88%;
+  .industry-track {
+    gap: 14px;
   }
-  .industry-track::after {
-    flex: 0 0 12%;
-    content: "";
+  .industry-page {
+    /* Keep every card in one physical row even during the server-to-client
+       breakpoint handoff. This also prevents a stale multi-card page from
+       turning into the stacked columns seen on real mobile devices. */
+    grid-auto-flow: column;
+    grid-auto-columns: calc(86vw - 34.4px);
+    grid-template-columns: none;
+    grid-template-rows: minmax(0, 1fr);
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: 0;
+    max-width: none;
+    gap: 14px;
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+  }
+  .industry-page > .industry-card {
+    min-width: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
   .industry-card {
     min-height: 405px;
@@ -2863,7 +2921,6 @@ h1 {
   }
   .industry-card {
     min-height: 450px;
-    flex-basis: min(84vw, 340px);
   }
   .industry-content {
     padding: 25px;

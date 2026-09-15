@@ -577,9 +577,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="contact-placeholder">
                 Phone · +92 332-7923093
               </span>
-              <span className="contact-placeholder">
-                Address · House No 123
-              </span>
+              <div className="footer-offices">
+                <div>
+                  <p className="footer-office-label">MAIN OFFICE</p>
+                  <span className="footer-office-location">Karachi, Pakistan</span>
+                </div>
+                <div>
+                  <p className="footer-office-label">BACK OFFICE</p>
+                </div>
+              </div>
             </div>
           </div>
 

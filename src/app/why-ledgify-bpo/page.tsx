@@ -15,7 +15,7 @@ import {
 import { SiOdoo, SiQuickbooks, SiSap, SiXero } from "react-icons/si";
 import { FaMicrosoft, FaSlack } from "react-icons/fa6";
 import { ConsultationButton, SiteShell } from "@/components/site";
-import { services } from "@/lib/content";
+import { founders, services } from "@/lib/content";
 import { servicePageContent } from "@/lib/service-page-content";
 import styles from "./why-page.module.css";
 
@@ -275,7 +275,7 @@ export default function WhyLedgifyBPOPage() {
               <p className="eyebrow">THE PEOPLE BEHIND THE WORK</p>
               <h2 id="proof-heading">A partner you can get to know.</h2>
               <p>
-                LedgifyBPO is led by co-founders Naveed, CEO, and Saud, COO.
+                LedgifyBPO is led by co-founders {founders[0].name}, {founders[0].title}, and {founders[1].name}, {founders[1].title}.
                 Our approach starts with understanding your operation and agreeing
                 how the work will be reviewed.
               </p>

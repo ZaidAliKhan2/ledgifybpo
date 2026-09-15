@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowDown, Compass, Handshake, MessagesSquare } from "lucide-react";
 import { AboutFounders } from "@/components/about-founders";
 import { ConsultationButton, SiteShell } from "@/components/site";
+import { founders } from "@/lib/content";
 import styles from "./about-page.module.css";
 
 export const metadata: Metadata = {
@@ -31,6 +32,8 @@ const principles = [
     copy: "Start with the business in front of us—not a one-size-fits-all playbook.",
   },
 ];
+
+const [saudFounder, naveedFounder] = founders;
 
 export default function AboutPage() {
   return (
@@ -85,7 +88,7 @@ export default function AboutPage() {
                 <div className={styles.visionHalo} aria-hidden="true" />
                 <Image
                   src="/images/founder-1-name.png"
-                  alt="Naveed, Co-Founder and CEO of LedgifyBPO"
+                  alt={`${naveedFounder.name}, ${naveedFounder.role} of LedgifyBPO`}
                   fill
                   sizes="(max-width: 900px) 78vw, 440px"
                   className={styles.visionPortraitImage}
@@ -106,8 +109,8 @@ export default function AboutPage() {
                   and genuinely useful to the people leading the business.
                 </p>
                 <div className={styles.signature}>
-                  <span>Naveed</span>
-                  <small>Co-Founder &amp; CEO</small>
+                  <span>{naveedFounder.name}</span>
+                  <small>{naveedFounder.role}</small>
                 </div>
               </div>
             </article>
@@ -121,7 +124,7 @@ export default function AboutPage() {
                 <div className={styles.visionHalo} aria-hidden="true" />
                 <Image
                   src="/images/founder-2-name.png"
-                  alt="Saud, Co-Founder and COO of LedgifyBPO"
+                  alt={`${saudFounder.name}, ${saudFounder.role} of LedgifyBPO`}
                   fill
                   sizes="(max-width: 900px) 78vw, 440px"
                   className={styles.visionPortraitImage}
@@ -142,8 +145,8 @@ export default function AboutPage() {
                   keeping the wider needs of the business in view.
                 </p>
                 <div className={styles.signature}>
-                  <span>Saud</span>
-                  <small>Co-Founder &amp; COO</small>
+                  <span>{saudFounder.name}</span>
+                  <small>{saudFounder.role}</small>
                 </div>
               </div>
             </article>

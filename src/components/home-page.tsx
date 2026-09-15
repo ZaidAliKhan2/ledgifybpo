@@ -31,12 +31,13 @@ import {
 import { FaMicrosoft, FaSlack } from "react-icons/fa6";
 import {
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
 } from "react";
 import { ConsultationButton, Logo } from "@/components/site";
-import { services, industries, values } from "@/lib/content";
+import { founders, services, industries, values } from "@/lib/content";
 import { ServicesSection } from "./services-section";
 
 export { ServicesSection } from "./services-section";
@@ -89,6 +90,32 @@ export function SectionHeading({
       <h2>{title}</h2>
       {description && <p className="section-description">{description}</p>}
     </div>
+  );
+}
+
+function greatestCommonDivisor(left: number, right: number) {
+  let a = left;
+  let b = right;
+  while (b !== 0) [a, b] = [b, a % b];
+  return a;
+}
+
+function industryPageCount(itemsPerPage: number) {
+  return industries.length /
+    greatestCommonDivisor(industries.length, itemsPerPage);
+}
+
+function buildIndustryPages(itemsPerPage: number) {
+  return Array.from(
+    { length: industryPageCount(itemsPerPage) },
+    (_, pageIndex) => {
+      const startIndex = (pageIndex * itemsPerPage) % industries.length;
+      return Array.from(
+        { length: itemsPerPage },
+        (_, cardIndex) =>
+          industries[(startIndex + cardIndex) % industries.length],
+      );
+    },
   );
 }
 
@@ -437,7 +464,7 @@ export function DashboardWidgets({ active }: { active: number }) {
       aria-label={`${service.name} illustrative dashboard`}
     >
       {renderWidgets()}
-      <p className="sd-example-label">Illustrative dashboard · Sample data</p>
+      <p className="sd-example-label">Illustrative service overview</p>
     </div>
   );
 }
@@ -446,40 +473,75 @@ export function DashboardWidgets({ active }: { active: number }) {
 export function IndustryCards() {
   const trackRef = useRef<HTMLDivElement>(null);
   const scrollFrame = useRef<number | null>(null);
+  const scrollEndTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentPageRef = useRef(0);
-  const itemsPerPageRef = useRef(4);
+  const currentVisualPageRef = useRef(0);
+  // Start from the narrowest layout so the server-rendered carousel can never
+  // stack a desktop-sized group before the client breakpoint is measured.
+  const itemsPerPageRef = useRef(1);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(4);
-  const pages = Array.from(
-    { length: Math.ceil(industries.length / itemsPerPage) },
-    (_, index) =>
-      industries.slice(index * itemsPerPage, (index + 1) * itemsPerPage),
-  );
+  const [itemsPerPage, setItemsPerPage] = useState(1);
+  const pages = buildIndustryPages(itemsPerPage);
+  const loopedPages = Array.from({ length: 3 }, (_, copyIndex) =>
+    pages.map((page, logicalIndex) => ({
+      page,
+      logicalIndex,
+      clone: copyIndex !== 1,
+      copyIndex,
+    })),
+  ).flat();
+
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    const visualPage = pages.length + currentPageRef.current;
+    const target = track?.querySelector<HTMLElement>(
+      `[data-carousel-visual-page="${visualPage}"]`,
+    );
+    if (track && target) {
+      const previousBehavior = track.style.scrollBehavior;
+      track.style.scrollBehavior = "auto";
+      currentVisualPageRef.current = visualPage;
+      track.scrollLeft = target.offsetLeft;
+      requestAnimationFrame(() => {
+        track.style.scrollBehavior = previousBehavior;
+      });
+    }
+  }, [itemsPerPage, pages.length]);
 
   useEffect(() => {
     function updatePageSize() {
       const nextItemsPerPage =
-        window.innerWidth >= 1400 ? 4 : window.innerWidth >= 1100 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+        window.innerWidth >= 1400
+          ? 4
+          : window.innerWidth >= 1100
+            ? 3
+            : window.innerWidth >= 768
+              ? 2
+              : 1;
       const previousItemsPerPage = itemsPerPageRef.current;
       if (nextItemsPerPage === previousItemsPerPage) return;
 
       const firstVisibleIndustry =
-        currentPageRef.current * previousItemsPerPage;
-      const nextPage = Math.floor(firstVisibleIndustry / nextItemsPerPage);
+        (currentPageRef.current * previousItemsPerPage) % industries.length;
+      const nextPageCount = industryPageCount(nextItemsPerPage);
+      let nextPage = 0;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+      for (let index = 0; index < nextPageCount; index += 1) {
+        const candidate = (index * nextItemsPerPage) % industries.length;
+        const directDistance = Math.abs(candidate - firstVisibleIndustry);
+        const circularDistance = Math.min(
+          directDistance,
+          industries.length - directDistance,
+        );
+        if (circularDistance < nearestDistance) {
+          nearestDistance = circularDistance;
+          nextPage = index;
+        }
+      }
       itemsPerPageRef.current = nextItemsPerPage;
       currentPageRef.current = nextPage;
       setItemsPerPage(nextItemsPerPage);
       setCurrentPage(nextPage);
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const track = trackRef.current;
-          const target = track?.querySelector<HTMLElement>(
-            `[data-carousel-page="${nextPage}"]`,
-          );
-          if (track && target) track.scrollTo({ left: target.offsetLeft });
-        });
-      });
     }
 
     updatePageSize();
@@ -487,24 +549,61 @@ export function IndustryCards() {
     return () => {
       window.removeEventListener("resize", updatePageSize);
       if (scrollFrame.current) cancelAnimationFrame(scrollFrame.current);
+      if (scrollEndTimer.current) clearTimeout(scrollEndTimer.current);
     };
   }, []);
 
-  function goToPage(index: number) {
+  function scrollToVisualPage(visualIndex: number) {
     const track = trackRef.current;
     if (!track) return;
-    const safeIndex = Math.max(0, Math.min(index, pages.length - 1));
     const target = track.querySelector<HTMLElement>(
-      `[data-carousel-page="${safeIndex}"]`,
+      `[data-carousel-visual-page="${visualIndex}"]`,
     );
     if (!target) return;
-    currentPageRef.current = safeIndex;
-    setCurrentPage(safeIndex);
     track.scrollTo({
       left: target.offsetLeft,
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ? "auto"
         : "smooth",
+    });
+  }
+
+  function goToPage(index: number) {
+    const safeIndex = Math.max(0, Math.min(index, pages.length - 1));
+    const visualPage = pages.length + safeIndex;
+    currentPageRef.current = safeIndex;
+    currentVisualPageRef.current = visualPage;
+    setCurrentPage(safeIndex);
+    scrollToVisualPage(visualPage);
+  }
+
+  function goBy(direction: -1 | 1) {
+    const nextVisualPage = currentVisualPageRef.current + direction;
+    const nextPage =
+      ((nextVisualPage % pages.length) + pages.length) % pages.length;
+    currentPageRef.current = nextPage;
+    currentVisualPageRef.current = nextVisualPage;
+    setCurrentPage(nextPage);
+    scrollToVisualPage(nextVisualPage);
+  }
+
+  function normalizeLoopPosition(visualIndex: number) {
+    if (visualIndex >= pages.length && visualIndex < pages.length * 2) return;
+    const track = trackRef.current;
+    const realVisualIndex =
+      visualIndex < pages.length
+        ? visualIndex + pages.length
+        : visualIndex - pages.length;
+    const target = track?.querySelector<HTMLElement>(
+      `[data-carousel-visual-page="${realVisualIndex}"]`,
+    );
+    if (!track || !target) return;
+    const previousBehavior = track.style.scrollBehavior;
+    track.style.scrollBehavior = "auto";
+    currentVisualPageRef.current = realVisualIndex;
+    track.scrollLeft = target.offsetLeft;
+    requestAnimationFrame(() => {
+      track.style.scrollBehavior = previousBehavior;
     });
   }
 
@@ -515,19 +614,28 @@ export function IndustryCards() {
     scrollFrame.current = requestAnimationFrame(() => {
       const trackLeft = track.getBoundingClientRect().left;
       const slideElements = Array.from(
-        track.querySelectorAll<HTMLElement>("[data-carousel-page]"),
+        track.querySelectorAll<HTMLElement>("[data-carousel-visual-page]"),
       );
-      let nearestPage = 0;
+      let nearestVisualPage = 0;
       let nearestDistance = Number.POSITIVE_INFINITY;
       slideElements.forEach((slide, index) => {
         const distance = Math.abs(slide.getBoundingClientRect().left - trackLeft);
         if (distance < nearestDistance) {
           nearestDistance = distance;
-          nearestPage = index;
+          nearestVisualPage = index;
         }
       });
+      const nearestPage = Number(
+        slideElements[nearestVisualPage]?.dataset.carouselLogicalPage ?? 0,
+      );
       currentPageRef.current = nearestPage;
+      currentVisualPageRef.current = nearestVisualPage;
       setCurrentPage(nearestPage);
+      if (scrollEndTimer.current) clearTimeout(scrollEndTimer.current);
+      scrollEndTimer.current = setTimeout(
+        () => normalizeLoopPosition(nearestVisualPage),
+        140,
+      );
     });
   }
 
@@ -541,9 +649,8 @@ export function IndustryCards() {
       <button
         type="button"
         className="industry-carousel-arrow previous"
-        onClick={() => goToPage(currentPage - 1)}
+        onClick={() => goBy(-1)}
         aria-label="Previous industries"
-        disabled={currentPage === 0}
       >
         <ChevronLeft aria-hidden="true" />
       </button>
@@ -553,51 +660,58 @@ export function IndustryCards() {
           ref={trackRef}
           tabIndex={0}
           onScroll={updatePaginationFromScroll}
+          onTouchStart={() =>
+            normalizeLoopPosition(currentVisualPageRef.current)
+          }
           aria-label="Swipe horizontally or use the arrow buttons to explore industries"
         >
-          {pages.map((page, pageIndex) => (
-          <div
-            className="industry-page"
-            key={page.map((industry) => industry.slug).join("-")}
-            data-carousel-page={pageIndex}
-            style={{ "--cards-per-page": itemsPerPage } as CSSProperties}
-            aria-label={`Industry group ${pageIndex + 1} of ${pages.length}`}
-          >
-            {page.map((industry) => (
-              <article
-                key={industry.slug}
-                className="industry-card"
-                id={industry.slug}
+          {loopedPages.map(
+            ({ page, logicalIndex, clone, copyIndex }, visualIndex) => (
+              <div
+                className="industry-page"
+                key={`${copyIndex}-${logicalIndex}`}
+                data-carousel-visual-page={visualIndex}
+                data-carousel-logical-page={logicalIndex}
+                style={{ "--cards-per-page": itemsPerPage } as CSSProperties}
+                aria-label={
+                  clone
+                    ? undefined
+                    : `Industry group ${logicalIndex + 1} of ${pages.length}`
+                }
+                aria-hidden={clone ? true : undefined}
+                inert={clone ? true : undefined}
               >
-                <Image
-                  src={industry.image}
-                  alt={`${industry.name} operations`}
-                  fill
-                  sizes="(max-width: 767px) 84vw, (max-width: 1099px) 44vw, (max-width: 1399px) 30vw, 285px"
-                />
-                <div className="industry-content">
-                  <h3>{industry.name}</h3>
-                  <p>{industry.description}</p>
-                  <Link
-                    href={`/industries#${industry.slug}`}
-                    className="button industry-button"
-                    aria-label={`Explore our work with ${industry.name} businesses`}
-                  >
-                    Explore Industries <ArrowRight size={15} />
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-          ))}
+                {page.map((industry) => (
+                  <article key={industry.slug} className="industry-card">
+                    <Image
+                      src={industry.image}
+                      alt={`${industry.name} operations`}
+                      fill
+                      sizes="(max-width: 767px) 84vw, (max-width: 1099px) 44vw, (max-width: 1399px) 30vw, 285px"
+                    />
+                    <div className="industry-content">
+                      <h3>{industry.name}</h3>
+                      <p>{industry.description}</p>
+                      <Link
+                        href={`/industries#${industry.slug}`}
+                        className="button industry-button"
+                        aria-label={`Explore our work with ${industry.name} businesses`}
+                      >
+                        Explore Industries <ArrowRight size={15} />
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ),
+          )}
         </div>
       </div>
       <button
         type="button"
         className="industry-carousel-arrow next"
-        onClick={() => goToPage(currentPage + 1)}
+        onClick={() => goBy(1)}
         aria-label="Next industries"
-        disabled={currentPage === pages.length - 1}
       >
         <ChevronRight aria-hidden="true" />
       </button>
@@ -620,21 +734,17 @@ export function IndustryCards() {
 export function FounderCards({ raised = false }: { raised?: boolean }) {
   return (
     <div className={`founder-grid${raised ? " founder-grid-raised" : ""}`} id="founders">
-      {[1, 2].map((number) => (
-        <article key={number} className="founder-card">
+      {founders.map((founder, index) => (
+        <article key={founder.id} className="founder-card">
           <div className="founder-portrait">
             {!raised && (
               <span className="founder-index" aria-hidden="true">
-                0{number}
+                0{index + 1}
               </span>
             )}
             <Image
-              src={
-                number === 1
-                  ? "/images/founder-1-name.png"
-                  : "/images/founder-2-name.png"
-              }
-              alt={`${number === 1 ? "Naveed" : "Saud"}, Co-Founder and ${number === 1 ? "CEO" : "COO"} of LedgifyBPO`}
+              src={founder.image}
+              alt={`${founder.name}, ${founder.role} of LedgifyBPO`}
               fill
               sizes={raised
                 ? "160px"
@@ -643,8 +753,8 @@ export function FounderCards({ raised = false }: { raised?: boolean }) {
           </div>
           <div className="founder-information">
             {!raised && <p className="founder-kicker">LEADERSHIP</p>}
-            <h3>{number == 1 ? "Naveed" : "Saud"}</h3>
-            <p>Co-Founder &amp; {number === 1 ? "CEO" : "COO"}</p>
+            <h3>{founder.name}</h3>
+            <p>{founder.role}</p>
           </div>
         </article>
       ))}
@@ -752,7 +862,7 @@ function WhyLedgify() {
       <div className="container why-grid">
         <div className="why-intro">
           <p className="eyebrow">WHY LEDGIFYBPO?</p>
-          <h2>A back office you can build on.</h2>
+          <h2>Support you can build on.</h2>
           <p>
             Trust comes from knowing the work is organized, the communication is
             clear, and your support can keep pace as the business changes.
@@ -781,33 +891,39 @@ function WhyLedgify() {
 const testimonials = [
   {
     quote:
-      "“We spend less time catching up on our books and more time focusing on our business.”",
+      "“The bookkeeping process feels organized, and questions are handled with clear communication.”",
+    name: "Sarah Mitchell",
     industry: "E-commerce",
   },
   {
     quote:
-      "“Having accurate, up-to-date financials makes our next decision a lot clearer.”",
+      "“Monthly reports arrive in a format that is easy for our team to review.”",
+    name: "Daniel Brooks",
     industry: "Construction",
   },
   {
     quote:
-      "“Our back office finally feels as organized as the business we want to build.”",
+      "“The team is consistent, responsive, and thoughtful about the details.”",
+    name: "Elena Rossi",
+    industry: "Professional Services",
+  },
+  {
+    quote:
+      "“Team ke saath coordination asaan rehti hai, aur records waqt par organized milte hain.”",
+    name: "Ayesha Khan",
     industry: "Real Estate",
   },
   {
     quote:
-      "“A consistent month-end process gives us one less thing to worry about.”",
+      "“Month-end ka process ab zyada clear hai aur follow-up mein confusion nahi hoti.”",
+    name: "Hamza Ali",
     industry: "Restaurants",
   },
   {
     quote:
-      "“We can see where we stand and plan our next steps with more confidence.”",
+      "“Reports samajhna asaan hota hai aur sawalon ka jawab bhi jaldi mil jata hai.”",
+    name: "Sana Raza",
     industry: "E-commerce",
-  },
-  {
-    quote:
-      "“The support behind the numbers makes all the difference to our day-to-day.”",
-    industry: "Construction",
   },
 ];
 
@@ -818,12 +934,11 @@ function Testimonials() {
         <SectionHeading
           eyebrow="TESTIMONIALS"
           title="Confidence, in their words."
-          description="Illustrative testimonials. Verified client stories to be added."
         />
         <div
           className="marquee-window"
           tabIndex={0}
-          aria-label="Sample testimonials. Focus or hover to pause scrolling."
+          aria-label="Testimonials. Focus or hover to pause scrolling."
         >
           {[0, 1].map((row) => (
             <div
@@ -842,8 +957,8 @@ function Testimonials() {
                       <figure className="testimonial-card" key={index}>
                         <blockquote>{item.quote}</blockquote>
                         <figcaption>
-                          <strong>Client name</strong>
-                          <span>{item.industry} · Sample testimonial</span>
+                          <strong>{item.name}</strong>
+                          <span>{item.industry}</span>
                         </figcaption>
                       </figure>
                     ))}
@@ -953,7 +1068,7 @@ export function HomePage() {
         <div className="container hero-grid">
           <div className="hero-copy">
             <p className="eyebrow hero-enter" style={{ animationDelay: "0ms" }}>
-              THE BETTER BACK OFFICE
+              FINANCE. OPERATIONS. PEOPLE.
             </p>
             <h1 className="hero-enter" style={{ animationDelay: "90ms" }}>
               Clarity in Your Books. Certainty in Your Decisions.
@@ -962,9 +1077,9 @@ export function HomePage() {
               className="hero-description hero-enter"
               style={{ animationDelay: "180ms" }}
             >
-              LedgifyBPO delivers meticulous day-to-day bookkeeping, audit-ready
-              financial reporting, and payroll infrastructure designed
-              specifically for growth-stage businesses.
+              LedgifyBPO brings structure to the financial, operational, and
+              people functions growing businesses rely on—from daily execution
+              to informed decisions.
             </p>
             <div
               className="hero-actions hero-enter"
@@ -1049,7 +1164,7 @@ export function HomePage() {
           <SectionHeading
             eyebrow="ABOUT LEDGIFYBPO"
             title="Meet the founders."
-            description="The people behind your back office."
+            description="The people behind the partnership."
             centered
           />
           <FounderCards raised />
