@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import { siteMetadata } from "@/lib/seo";
+import { SiteStructuredData } from "@/components/structured-data";
 import type { ReactNode } from "react";
 import { Libre_Franklin, Inter } from "next/font/google";
-import { HomepageIntroBootstrap } from "@/components/homepage-intro-bootstrap";
+import "@/components/homepage-intro.css";
 import "./globals.css";
 
 const heading = Libre_Franklin({
@@ -17,18 +18,14 @@ const body = Inter({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "LedgifyBPO — Bookkeeping & Accounting for Growth-Stage Businesses",
-  description:
-    "LedgifyBPO delivers meticulous day-to-day bookkeeping, audit-ready financial reporting, and payroll infrastructure designed specifically for growth-stage businesses.",
-};
+export const metadata = siteMetadata;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${heading.variable} ${body.variable} antialiased`}>
-        <HomepageIntroBootstrap />
         {children}
+        <SiteStructuredData />
       </body>
     </html>
   );

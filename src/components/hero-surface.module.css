@@ -1,0 +1,241 @@
+.surface {
+  --grid-size: 64px;
+  --pointer-x: 76%;
+  --pointer-y: 32%;
+  --field-strength: 0;
+  --visual-x: 0px;
+  --visual-y: 0px;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: 690px;
+  padding-block: clamp(88px, 8vw, 120px);
+  background: var(--background);
+}
+
+.grid, .base, .gridCanvas, .illumination {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.grid {
+  z-index: -1;
+  overflow: hidden;
+  mask-image: radial-gradient(ellipse at 54% 45%, #000 35%, transparent 78%);
+}
+/* Server-rendered fallback also covers browsers without a 2D context. */
+.base {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--accent-deep) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--accent-deep) 14%, transparent) 1px, transparent 1px);
+  background-size: var(--grid-size) var(--grid-size);
+}
+.surface[data-grid-ready] .base { visibility: hidden; }
+.illumination {
+  background: radial-gradient(circle 175px at var(--pointer-x) var(--pointer-y), color-mix(in srgb, var(--accent) 7%, transparent), transparent 85%);
+  opacity: var(--field-strength);
+}
+.filterDefinitions { position: absolute; pointer-events: none; }
+.composition {
+  width: calc(100% - 112px);
+  max-width: 1280px;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 3vw, 48px);
+}
+.surface :global(.hero-copy) { position: relative; min-width: 0; }
+.surface :global(.eyebrow) { margin-bottom: 25px; }
+.surface h1 {
+  font-size: clamp(48px, 4.35vw, 64px);
+  line-height: 1.1;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+.surface [data-hero-line] { display: block; }
+.surface [data-hero-line] > span { display: block; }
+.surface [data-hero-line] + [data-hero-line] { color: var(--accent-deep); }
+.surface :global(.hero-description) {
+  max-width: 540px;
+  margin-top: 26px;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+.surface :global(.hero-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px 30px;
+  margin-top: 32px;
+}
+.surface :global(.hero-actions .button) { position: relative; overflow: hidden; padding: 17px 24px; }
+.surface :global(.reassurance) { margin-top: 25px; }
+.surface :global(.hero-actions .button)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 14%) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform 550ms ease;
+  pointer-events: none;
+}
+.surface :global(.hero-actions svg) { transition: transform 220ms ease; }
+.surface :global(.hero-actions .text-link) { position: relative; }
+.surface :global(.hero-actions .text-link)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: calc(100% - 29px);
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0.25);
+  transform-origin: left;
+  opacity: 0.3;
+  transition: transform 240ms ease, opacity 240ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .surface :global(.hero-actions .button:hover) { transform: translateY(-2px); }
+  .surface :global(.hero-actions .button:hover)::before { transform: translateX(120%); }
+  .surface :global(.hero-actions .text-link:hover) { transform: none; }
+  .surface :global(.hero-actions :is(a, button):hover svg) { transform: translateX(3px); }
+  .surface :global(.hero-actions .text-link:hover)::after { transform: scaleX(1); opacity: 0.8; }
+}
+.visual {
+  min-width: 0;
+  width: 100%;
+  pointer-events: none;
+  color: var(--accent-deep);
+}
+.weave {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transform: translate(var(--visual-x), var(--visual-y));
+}
+.registration { stroke: var(--accent-deep); stroke-width: 0.8; opacity: 0.2; }
+.registerTicks { stroke: var(--accent-deep); stroke-width: 0.8; opacity: 0.3; }
+.lane { --proximity: 0; }
+.lane text {
+  fill: var(--accent-deep);
+  font-family: var(--font-body), sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.1px;
+  opacity: calc(0.65 + var(--proximity) * 0.35);
+}
+.rail { stroke: var(--accent-deep); stroke-width: 1; opacity: 0.28; }
+.railEcho { stroke: var(--accent); stroke-width: 0.7; opacity: 0.15; }
+.signal {
+  stroke: var(--accent);
+  stroke-width: calc(1.1px + var(--proximity) * 0.6px);
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--proximity));
+  opacity: calc(0.12 + var(--proximity) * 0.88);
+}
+.nodeHalo {
+  fill: var(--accent);
+  opacity: calc(0.04 + var(--proximity) * 0.1);
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(calc(1 + var(--proximity) * 0.32));
+}
+.node { fill: var(--background); stroke: var(--accent); stroke-width: 1.3; }
+.terminal { fill: var(--accent); opacity: 0.5; }
+.core { stroke: var(--accent); stroke-width: 1; }
+.coreBack { fill: var(--neutral-light); stroke-opacity: 0.2; }
+.coreFront { fill: var(--background); stroke-opacity: 0.7; }
+.coreAnchor { fill: var(--accent); }
+.output { stroke-opacity: 0.45; }
+
+/* Pause only Hero choreography while the existing preloader owns the reveal.
+   Removing its attribute resumes these same animations, without a replay. */
+.surface :global(.eyebrow),
+.surface :global(.hero-description),
+.surface :global(.hero-actions),
+.surface :global(.reassurance) {
+  animation: hero-detail-in 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.surface :global(.hero-description) { animation-delay: 260ms; }
+.surface :global(.hero-actions) { animation-delay: 350ms; }
+.surface :global(.reassurance) { animation-delay: 410ms; }
+.surface [data-hero-line] > span {
+  animation: hero-line-in 850ms cubic-bezier(0.22, 1, 0.36, 1) 65ms both;
+}
+.surface [data-hero-line] + [data-hero-line] > span { animation-delay: 175ms; }
+.visual { animation: hero-map-in 1000ms cubic-bezier(0.22, 1, 0.36, 1) 450ms both; }
+.lane { animation: hero-lane-in 850ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(500ms + var(--lane-index) * 90ms); }
+.core { animation: hero-core-in 900ms cubic-bezier(0.22, 1, 0.36, 1) 650ms both; }
+:global(html[data-homepage-intro]) .surface :is(:global(.eyebrow), :global(.hero-description), :global(.hero-actions), :global(.reassurance)),
+:global(html[data-homepage-intro]) .surface [data-hero-line] > span,
+:global(html[data-homepage-intro]) .visual,
+:global(html[data-homepage-intro]) .lane,
+:global(html[data-homepage-intro]) .core { animation-play-state: paused; }
+@keyframes hero-detail-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hero-line-in {
+  from { clip-path: inset(100% -3% -12%); transform: translateY(35px); }
+  to { clip-path: inset(-12% -3% -12%); transform: translateY(0); }
+}
+@keyframes hero-map-in {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(-5%); }
+}
+@keyframes hero-lane-in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes hero-core-in {
+  from { opacity: 0; transform: translate(7px, -7px); }
+  to { opacity: 1; transform: translate(0, 0); }
+}
+
+@media (min-width: 1500px) {
+  .composition { grid-template-columns: minmax(0, 1.95fr) minmax(0, 1fr); }
+}
+@media (max-width: 1100px) {
+  .composition { width: calc(100% - 72px); gap: 24px; }
+  .surface h1 { font-size: 46px; }
+}
+@media (max-width: 999px) {
+  .surface { padding-block: 76px 60px; min-height: 0; }
+  .composition { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .surface :global(.hero-copy) { max-width: 720px; margin-inline: auto; text-align: center; }
+  .surface h1 { font-size: clamp(42px, 6.4vw, 58px); }
+  .surface :global(.hero-description) { margin-inline: auto; }
+  .surface :global(.hero-actions) { justify-content: center; }
+  .visual { width: min(360px, 100%); margin-inline: auto; }
+  .weave { margin-block: -40px; }
+  .registration, .registerTicks { visibility: hidden; }
+}
+@media (max-width: 767px) {
+  .surface { --grid-size: 48px; padding-block: 64px 42px; }
+  .composition { width: calc(100% - 40px); gap: 20px; }
+  .surface :global(.eyebrow) { font-size: 10px; margin-bottom: 22px; }
+  .surface h1 { font-size: clamp(36px, 7.3vw, 54px); line-height: 1.12; letter-spacing: -0.05em; }
+  .surface :global(.hero-description) { font-size: 14px; margin-top: 24px; }
+  .surface :global(.hero-actions) { gap: 22px; margin-top: 28px; }
+  .surface :global(.hero-actions .button) { padding: 16px 20px; }
+  .surface :global(.reassurance) { font-size: 10px; margin-top: 23px; }
+  .visual { width: min(310px, 100%); }
+  .lane text { font-size: 12px; letter-spacing: 1.6px; }
+  .weave { margin-block: -34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .surface .weave,
+  .surface .nodeHalo,
+  .surface :global(.hero-actions :is(a, button)),
+  .surface :global(.hero-actions svg) { transform: none; }
+  .surface h1 { filter: none !important; }
+  .surface .illumination { display: none; }
+  .surface *, .surface *::before, .surface *::after { animation: none !important; transition: none !important; }
+}

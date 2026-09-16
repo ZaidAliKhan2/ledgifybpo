@@ -360,147 +360,17 @@ h2 {
   background: var(--accent);
   color: #ffffff;
 }
-.hero {
-  padding-block: 80px;
-}
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.13fr 1fr;
-  align-items: center;
-  gap: 70px;
-}
-.hero-copy {
-  padding-bottom: 2px;
-}
-.hero .eyebrow {
-  margin-bottom: 23px;
-}
 h1 {
   font-size: clamp(45px, 4.45vw, 62px);
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: -2.5px;
 }
-.hero-description {
-  font-size: 15px;
-  line-height: 1.85;
-  color: var(--text-secondary);
-  max-width: 505px;
-  margin-top: 27px;
-}
-.hero-actions {
-  display: flex;
-  gap: 26px;
-  align-items: center;
-  margin-top: 31px;
-}
-.hero-actions .button {
-  padding: 17px 21px;
-}
 .reassurance {
   color: var(--text-secondary);
   font-size: 11px;
   line-height: 1.7;
   margin-top: 23px;
-}
-.hero-slideshow {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  width: 100%;
-  max-width: 480px;
-  justify-self: end;
-  overflow: hidden;
-  border-radius: 18px;
-  animation: image-enter 0.78s ease-out both;
-  background: var(--neutral-light);
-}
-.hero-slides {
-  position: absolute;
-  inset: 0;
-}
-.hero-slides img {
-  object-fit: cover;
-  object-position: center;
-  opacity: 0;
-  transform: scale(1.025);
-  transition:
-    opacity 0.85s ease,
-    transform 6.5s ease;
-}
-.hero-slides img.active {
-  opacity: 1;
-  transform: scale(1);
-}
-.hero-slide-overlay {
-  position: absolute;
-  inset: 45% 0 0;
-  background: linear-gradient(transparent, rgb(28 25 23 / 68%));
-  pointer-events: none;
-}
-.hero-slide-caption {
-  position: absolute;
-  right: 22px;
-  bottom: 22px;
-  left: 22px;
-  z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
-  color: var(--background);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-}
-.hero-slide-controls {
-  position: absolute;
-  top: 17px;
-  right: 17px;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px;
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 999px;
-  background: rgb(28 25 23 / 42%);
-  backdrop-filter: blur(9px);
-}
-.hero-slide-controls > button {
-  display: grid;
-  width: 30px;
-  height: 30px;
-  place-items: center;
-  padding: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--background);
-}
-.hero-slide-controls > button:hover {
-  background: rgb(255 255 255 / 14%);
-}
-.hero-slide-controls svg {
-  width: 15px;
-  height: 15px;
-}
-.hero-slide-dots {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding-inline: 4px;
-}
-.hero-slide-dots button {
-  width: 6px;
-  height: 6px;
-  padding: 0;
-  border-radius: 999px;
-  background: rgb(255 255 255 / 50%);
-  transition:
-    width 0.2s ease,
-    background 0.2s ease;
-}
-.hero-slide-dots button.active {
-  width: 18px;
-  background: var(--background);
 }
 .hero-enter {
   animation: fade-up 0.56s ease-out both;
@@ -513,16 +383,6 @@ h1 {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-@keyframes image-enter {
-  from {
-    opacity: 0;
-    transform: scale(1.03);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 .trust-strip {
@@ -2442,26 +2302,13 @@ h1 {
   margin-bottom: 17px;
 }
 
-@media (min-width: 1440px) {
-  .hero-grid {
-    grid-template-columns: 1.1fr 1fr;
-    gap: 95px;
-  }
-}
 @media (max-width: 1100px) {
   .container {
     width: calc(100% - 72px);
   }
-  .hero-grid {
-    gap: 45px;
-  }
   h1 {
     font-size: 48px;
     letter-spacing: -2px;
-  }
-  .hero-actions {
-    gap: 18px;
-    flex-wrap: wrap;
   }
   .desktop-nav {
     gap: 23px;
@@ -2645,50 +2492,14 @@ h1 {
     gap: 17px;
     font-size: 12px;
   }
-  .hero {
-    padding-block: 55px 58px;
-  }
-  .hero-grid {
-    grid-template-columns: 1fr;
-    gap: 39px;
-  }
-  .hero-copy {
-    max-width: 600px;
-  }
   h1 {
     font-size: clamp(40px, 7.6vw, 58px);
     letter-spacing: -1.8px;
     line-height: 1.13;
   }
-  .hero .eyebrow {
-    margin-bottom: 21px;
-  }
-  .hero-description {
-    font-size: 14px;
-    margin-top: 24px;
-    max-width: 540px;
-  }
-  .hero-actions {
-    margin-top: 27px;
-    gap: 22px;
-  }
-  .hero-actions .button {
-    padding: 16px 18px;
-    font-size: 12px;
-  }
-  .hero-actions .text-link {
-    font-size: 12px;
-    gap: 8px;
-  }
   .reassurance {
     font-size: 10px;
     margin-top: 19px;
-  }
-  .hero-slideshow {
-    max-width: none;
-    width: 100%;
-    max-height: 660px;
-    border-radius: 16px;
   }
   .trust-strip {
     padding-block: 29px;
@@ -2982,13 +2793,6 @@ h1 {
     grid-template-columns: 1fr;
     gap: 0;
   }
-  .hero-actions {
-    gap: 19px;
-  }
-  .hero-actions .button {
-    gap: 10px;
-    padding-inline: 14px;
-  }
   .widget-expenses {
     padding: 12px;
     width: 48%;
@@ -2996,16 +2800,6 @@ h1 {
   .donut-chart {
     width: 58px;
     height: 58px;
-  }
-  .hero-slide-caption {
-    right: 17px;
-    bottom: 17px;
-    left: 17px;
-    font-size: 9px;
-  }
-  .hero-slide-controls {
-    top: 12px;
-    right: 12px;
   }
   .why-reasons article {
     grid-template-columns: 32px 42px minmax(0, 1fr);
@@ -3026,8 +2820,7 @@ h1 {
     animation: none !important;
     transition: none !important;
   }
-  .hero-enter,
-  .hero-slideshow {
+  .hero-enter {
     opacity: 1;
     transform: none;
   }

@@ -1,3 +1,5 @@
+import { createPageMetadata } from "@/lib/seo";
+import { PageStructuredData } from "@/components/structured-data";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, Check, Layers3 } from "lucide-react";
@@ -5,16 +7,13 @@ import { ConsultationButton, SiteShell } from "@/components/site";
 import { industries } from "@/lib/content";
 import styles from "./industries-page.module.css";
 
-export const metadata = {
-  title: "Industries | LedgifyBPO",
-  description:
-    "Accounting and back-office support shaped around the way your industry operates.",
-};
+export const metadata = createPageMetadata("/industries");
 
 export default function IndustriesPage() {
   return (
     <SiteShell>
       <main id="main" className={styles.page}>
+        <PageStructuredData path="/industries" />
         <section className={styles.hero}>
           <div className={`container ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>

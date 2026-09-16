@@ -1,5 +1,7 @@
 "use client";
 
+import { ScrollText } from "./home-scroll-motion";
+
 import Link from "next/link";
 import {
   ArrowUpRight, Check, ReceiptText, ArrowLeftRight, Repeat2,
@@ -34,7 +36,7 @@ function WorkMarker({ slug, index }: { slug: string; index: number }) {
   );
 }
 
-export function ServicesSection() {
+export function ServicesSection({ scrollMotion = false }: { scrollMotion?: boolean }) {
   const [active, setActive] = useState(0);
   const [displayed, setDisplayed] = useState(0);
   const [phase, setPhase] = useState<"idle" | "exiting" | "entering">("idle");
@@ -197,10 +199,10 @@ export function ServicesSection() {
     <section className={`section ${styles.section}`} id="services" aria-labelledby="services-heading">
       <div className="container">
         <header className={styles.heading}>
-          <div><p className="eyebrow">OUR SERVICES</p><h2 id="services-heading">Your finance and operations.<br /><span>Taken care of.</span></h2></div>
-          <p>From financial operations and reporting to compliance, advisory, and people support, we&apos;re an organized extension of your team.</p>
+          <div><p className="eyebrow">OUR SERVICES</p><h2 id="services-heading">{scrollMotion ? <ScrollText>Your finance and operations.<br /><span>Taken care of.</span></ScrollText> : <>Your finance and operations.<br /><span>Taken care of.</span></>}</h2></div>
+          <p data-scroll-copy={scrollMotion || undefined}>From financial operations and reporting to compliance, advisory, and people support, we&apos;re an organized extension of your team.</p>
         </header>
-        <div className={styles.navigation}>
+        <div className={styles.navigation} data-scroll-navigation={scrollMotion || undefined}>
           <div
             className={styles.tabs}
             role="tablist"

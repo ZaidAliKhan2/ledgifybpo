@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/seo";
+import { PageStructuredData } from "@/components/structured-data";
 import Link from "next/link";
 import {
   ArrowDown,
@@ -19,11 +20,7 @@ import { founders, services } from "@/lib/content";
 import { servicePageContent } from "@/lib/service-page-content";
 import styles from "./why-page.module.css";
 
-export const metadata: Metadata = {
-  title: "Why LedgifyBPO | Business Support Built Around Your Team",
-  description:
-    "Extend your team with bookkeeping, accounting, tax coordination, financial advisory, and HR support. Compare the approach and see how working with LedgifyBPO fits your operation.",
-};
+export const metadata = createPageMetadata("/why-ledgify-bpo");
 
 const reasons = [
   {
@@ -120,6 +117,7 @@ export default function WhyLedgifyBPOPage() {
   return (
     <SiteShell>
       <main id="main" className={styles.page}>
+        <PageStructuredData path="/why-ledgify-bpo" />
         <section className={styles.hero} aria-labelledby="why-heading">
           <div className={`container ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>

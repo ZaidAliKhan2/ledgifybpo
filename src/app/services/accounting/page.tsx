@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/seo";
+import { PageStructuredData } from "@/components/structured-data";
 import {
   ServiceCapabilities,
   ServiceCTA,
@@ -12,12 +13,13 @@ import { getServiceBySlug } from "@/lib/service-page-content";
 
 const service = getServiceBySlug("accounting");
 
-export const metadata: Metadata = service.page.metadata;
+export const metadata = createPageMetadata("/services/accounting");
 
 export default function AccountingPage() {
   return (
     <SiteShell>
       <main id="main">
+        <PageStructuredData path="/services/accounting" />
         <ServiceHero service={service} />
         <ServiceCapabilities service={service} />
         <ServiceProcess content={service.page.process} theme={service.slug} />

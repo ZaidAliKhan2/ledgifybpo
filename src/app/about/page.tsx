@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/seo";
+import { PageStructuredData } from "@/components/structured-data";
 import Image from "next/image";
 import { ArrowDown, Compass, Handshake, MessagesSquare } from "lucide-react";
 import { AboutFounders } from "@/components/about-founders";
@@ -6,11 +7,7 @@ import { ConsultationButton, SiteShell } from "@/components/site";
 import { founders } from "@/lib/content";
 import styles from "./about-page.module.css";
 
-export const metadata: Metadata = {
-  title: "About the Founders | LedgifyBPO",
-  description:
-    "Meet Naveed and Saud, the co-founders of LedgifyBPO, and learn about the principles behind the company they are building.",
-};
+export const metadata = createPageMetadata("/about");
 
 const principles = [
   {
@@ -39,6 +36,7 @@ export default function AboutPage() {
   return (
     <SiteShell>
       <main id="main" className={styles.page}>
+        <PageStructuredData path="/about" />
         <section className={styles.hero} aria-labelledby="about-heading">
           <div className={`container ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>

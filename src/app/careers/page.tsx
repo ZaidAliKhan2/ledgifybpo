@@ -1,14 +1,11 @@
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/seo";
+import { PageStructuredData } from "@/components/structured-data";
 import { ArrowDown } from "lucide-react";
 import { CareersPositions } from "@/components/careers-positions";
 import { SiteShell } from "@/components/site";
 import styles from "./careers-page.module.css";
 
-export const metadata: Metadata = {
-  title: "Careers | LedgifyBPO",
-  description:
-    "Explore current career opportunities with LedgifyBPO in accounting and bookkeeping.",
-};
+export const metadata = createPageMetadata("/careers");
 
 const reasons = [
   {
@@ -32,6 +29,7 @@ export default function CareersPage() {
   return (
     <SiteShell>
       <main id="main" className={styles.page}>
+        <PageStructuredData path="/careers" />
         <section className={styles.hero} aria-labelledby="careers-heading">
           <div className={`container ${styles.heroGrid}`}>
             <div className={styles.heroCopy}>

@@ -12,8 +12,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Layers3,
-  Pause,
-  Play,
   UsersRound,
   Workflow,
 } from "lucide-react";
@@ -39,6 +37,8 @@ import {
 import { ConsultationButton, Logo } from "@/components/site";
 import { founders, services, industries, values } from "@/lib/content";
 import { ServicesSection } from "./services-section";
+import { HeroSurface } from "./hero-surface";
+import { ScrollText, useHomeScrollMotion } from "./home-scroll-motion";
 
 export { ServicesSection } from "./services-section";
 
@@ -58,36 +58,23 @@ const tools = [
   { Icon: SiClickup, name: "ClickUp" },
 ];
 
-const heroSlides = [
-  {
-    src: "/images/hero/office-collaboration.webp",
-    alt: "Finance professionals reviewing reports together in a modern office",
-  },
-  {
-    src: "/images/hero/financial-review.webp",
-    alt: "Finance specialist reviewing business reports at her desk",
-  },
-  {
-    src: "/images/hero/operations-team.webp",
-    alt: "Back-office operations team collaborating around financial documents",
-  },
-];
-
 export function SectionHeading({
   eyebrow,
   title,
   description,
   centered = false,
+  scrollMotion = false,
 }: {
   eyebrow: string;
   title: string;
   description?: string;
   centered?: boolean;
+  scrollMotion?: boolean;
 }) {
   return (
     <div className={`section-heading${centered ? " centered" : ""}`}>
       <p className="eyebrow">{eyebrow}</p>
-      <h2>{title}</h2>
+      <h2>{scrollMotion ? <ScrollText>{title}</ScrollText> : title}</h2>
       {description && <p className="section-description">{description}</p>}
     </div>
   );
@@ -762,82 +749,6 @@ export function FounderCards({ raised = false }: { raised?: boolean }) {
   );
 }
 
-function HeroSlideshow() {
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (paused || reduceMotion) return;
-    const interval = window.setInterval(
-      () => setActive((current) => (current + 1) % heroSlides.length),
-      6000,
-    );
-    return () => window.clearInterval(interval);
-  }, [paused]);
-
-  function select(direction: -1 | 1) {
-    setActive(
-      (current) =>
-        (current + direction + heroSlides.length) % heroSlides.length,
-    );
-  }
-
-  return (
-    <div
-      className="hero-slideshow"
-      role="region"
-      aria-roledescription="carousel"
-      aria-label="LedgifyBPO teams at work"
-    >
-      <div className="hero-slides">
-        {heroSlides.map((slide, index) => (
-          <Image
-            key={slide.src}
-            src={slide.src}
-            alt={index === active ? slide.alt : ""}
-            fill
-            priority={index === 0}
-            sizes="(max-width: 767px) 100vw, 47vw"
-            className={index === active ? "active" : ""}
-            aria-hidden={index !== active}
-          />
-        ))}
-      </div>
-      <div className="hero-slide-overlay" aria-hidden="true" />
-      <div className="hero-slide-caption">
-        <span>Finance operations, thoughtfully supported.</span>
-        <span>{String(active + 1).padStart(2, "0")} / 03</span>
-      </div>
-      <div className="hero-slide-controls">
-        <button type="button" onClick={() => select(-1)} aria-label="Previous office image">
-          <ChevronLeft aria-hidden="true" />
-        </button>
-        <div className="hero-slide-dots" aria-label="Choose an office image">
-          {heroSlides.map((slide, index) => (
-            <button
-              type="button"
-              key={slide.src}
-              className={active === index ? "active" : ""}
-              aria-label={`Show image ${index + 1} of ${heroSlides.length}`}
-              aria-current={active === index ? "true" : undefined}
-              onClick={() => setActive(index)}
-            />
-          ))}
-        </div>
-        <button type="button" onClick={() => setPaused((value) => !value)} aria-label={paused ? "Play office slideshow" : "Pause office slideshow"} aria-pressed={paused}>
-          {paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
-        </button>
-        <button type="button" onClick={() => select(1)} aria-label="Next office image">
-          <ChevronRight aria-hidden="true" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
 function WhyLedgify() {
   const reasons = [
     {
@@ -862,7 +773,7 @@ function WhyLedgify() {
       <div className="container why-grid">
         <div className="why-intro">
           <p className="eyebrow">WHY LEDGIFYBPO?</p>
-          <h2>Support you can build on.</h2>
+          <h2><ScrollText>Support you can build on.</ScrollText></h2>
           <p>
             Trust comes from knowing the work is organized, the communication is
             clear, and your support can keep pace as the business changes.
@@ -932,6 +843,7 @@ function Testimonials() {
     <section className="section testimonials-section">
       <div className="container">
         <SectionHeading
+          scrollMotion
           eyebrow="TESTIMONIALS"
           title="Confidence, in their words."
         />
@@ -972,7 +884,7 @@ function Testimonials() {
   );
 }
 
-export function FinalCTA() {
+export function FinalCTA({ scrollMotion = false }: { scrollMotion?: boolean }) {
   return (
     <section
       className="final-cta"
@@ -995,9 +907,11 @@ export function FinalCTA() {
           </span>
 
           <h2 id="contact-cta-heading">
-            Less on your plate.
-            <br />
-            More clarity ahead.
+            {scrollMotion ? (
+              <ScrollText>Less on your plate.<br />More clarity ahead.</ScrollText>
+            ) : (
+              <>Less on your plate.<br />More clarity ahead.</>
+            )}
           </h2>
 
           <p className="contact-cta-description">
@@ -1062,44 +976,36 @@ export function FinalCTA() {
 }
 
 export function HomePage() {
+  const motionRoot = useRef<HTMLElement>(null);
+  useHomeScrollMotion(motionRoot);
+
   return (
-    <main id="main">
-      <section className="hero">
-        <div className="container hero-grid">
-          <div className="hero-copy">
-            <p className="eyebrow hero-enter" style={{ animationDelay: "0ms" }}>
-              FINANCE. OPERATIONS. PEOPLE.
-            </p>
-            <h1 className="hero-enter" style={{ animationDelay: "90ms" }}>
-              Clarity in Your Books. Certainty in Your Decisions.
-            </h1>
-            <p
-              className="hero-description hero-enter"
-              style={{ animationDelay: "180ms" }}
-            >
-              LedgifyBPO brings structure to the financial, operational, and
-              people functions growing businesses rely on—from daily execution
-              to informed decisions.
-            </p>
-            <div
-              className="hero-actions hero-enter"
-              style={{ animationDelay: "270ms" }}
-            >
-              <ConsultationButton />
-              <Link href="#services" className="text-link">
-                Explore Services <ArrowRight size={17} />
-              </Link>
-            </div>
-            <p
-              className="reassurance hero-enter"
-              style={{ animationDelay: "360ms" }}
-            >
-              Built for businesses ready to grow with confidence.
-            </p>
+    <main id="main" ref={motionRoot}>
+      <HeroSurface>
+        <div className="hero-copy">
+          <p className="eyebrow">
+            FINANCE. OPERATIONS. PEOPLE.
+          </p>
+          <h1>
+            <span data-hero-line><span>Clarity in Your Books.</span></span>{" "}
+            <span data-hero-line><span>Certainty in Your Decisions.</span></span>
+          </h1>
+          <p className="hero-description">
+            LedgifyBPO brings structure to the financial, operational, and
+            people functions growing businesses rely on—from daily execution
+            to informed decisions.
+          </p>
+          <div className="hero-actions">
+            <ConsultationButton />
+            <Link href="#services" className="text-link">
+              Explore Services <ArrowRight size={17} />
+            </Link>
           </div>
-          <HeroSlideshow />
+          <p className="reassurance">
+            Built for businesses ready to grow with confidence.
+          </p>
         </div>
-      </section>
+      </HeroSurface>
       <section className="trust-strip" aria-label="Software integrations">
         <div className="container trust-heading">
           <p>WORKS WITH THE TOOLS YOU ALREADY USE</p>
@@ -1123,6 +1029,7 @@ export function HomePage() {
       <section className="section value-section" id="ledgify-difference">
         <div className="container">
           <SectionHeading
+            scrollMotion
             eyebrow="THE LEDGIFY DIFFERENCE"
             title="Built Different. Built for You."
           />
@@ -1142,10 +1049,11 @@ export function HomePage() {
           </div>
         </div>
       </section>
-      <ServicesSection />
+      <ServicesSection scrollMotion />
       <section className="section industries-section" id="industries">
         <div className="container">
           <SectionHeading
+            scrollMotion
             eyebrow="WHO WE WORK WITH"
             title="Your industry. Our expertise."
             description="Specialized accounting for the way your business works."
@@ -1162,6 +1070,7 @@ export function HomePage() {
       <section className="section founders-section" id="about">
         <div className="container">
           <SectionHeading
+            scrollMotion
             eyebrow="ABOUT LEDGIFYBPO"
             title="Meet the founders."
             description="The people behind the partnership."
@@ -1176,7 +1085,7 @@ export function HomePage() {
         </div>
       </section>
       <Testimonials />
-      <FinalCTA />
+      <FinalCTA scrollMotion />
     </main>
   );
 }

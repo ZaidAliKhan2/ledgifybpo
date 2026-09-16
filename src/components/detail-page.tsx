@@ -9,7 +9,7 @@ type Props = { params: Promise<{ section: string; slug?: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { section } = await params;
   const title = section === "careers" ? "Careers" : "Page not found";
-  return { title: `${title} | LedgifyBPO` };
+  return { title, robots: { index: false, follow: true } };
 }
 
 export default async function DetailPage({ params }: Props) {
