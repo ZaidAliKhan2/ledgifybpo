@@ -820,19 +820,19 @@ const testimonials = [
   },
   {
     quote:
-      "“Team ke saath coordination asaan rehti hai, aur records waqt par organized milte hain.”",
+      "“It’s easy to coordinate with the team, and the records are organized and delivered on time.”",
     name: "Ayesha Khan",
     industry: "Real Estate",
   },
   {
     quote:
-      "“Month-end ka process ab zyada clear hai aur follow-up mein confusion nahi hoti.”",
+      "“The month-end process is much clearer now, and there’s no confusion during follow-ups.”",
     name: "Hamza Ali",
     industry: "Restaurants",
   },
   {
     quote:
-      "“Reports samajhna asaan hota hai aur sawalon ka jawab bhi jaldi mil jata hai.”",
+      "“The reports are easy to understand, and our questions are answered quickly.”",
     name: "Sana Raza",
     industry: "E-commerce",
   },
