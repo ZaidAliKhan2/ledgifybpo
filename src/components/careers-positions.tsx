@@ -1,18 +1,72 @@
 "use client";
 
 import { ArrowRight, Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, type MouseEvent } from "react";
 import { careerRoles, type CareerRole } from "@/lib/careers";
 import styles from "@/app/careers/careers-page.module.css";
+
+const careersEmail = "hr@ledgifybpo.com";
 
 const detailGroups = [
   { key: "responsibilities", title: "Responsibilities" },
   { key: "requirements", title: "Requirements" },
-  { key: "niceToHave", title: "Nice to Have" },
+  { key: "whatWeValue", title: "What we value" },
 ] as const satisfies readonly {
-  key: keyof Pick<CareerRole, "responsibilities" | "requirements" | "niceToHave">;
+  key: keyof Pick<
+    CareerRole,
+    "responsibilities" | "requirements" | "whatWeValue"
+  >;
   title: string;
 }[];
+
+function getApplicationLinks(roleTitle: string) {
+  const subject = `Application for ${roleTitle}`;
+  const body = [
+    "Hello LedgifyBPO HR Team,",
+    "",
+    `I would like to apply for the ${roleTitle} position.`,
+    "",
+    "Name:",
+    "Phone:",
+    "LinkedIn Profile:",
+    "",
+    "Please find my resume/CV attached.",
+    "",
+    "Regards,",
+  ].join("\n");
+  const encodedSubject = encodeURIComponent(subject);
+  const encodedBody = encodeURIComponent(body);
+
+  return {
+    mailto: `mailto:${careersEmail}?subject=${encodedSubject}&body=${encodedBody}`,
+    gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+      careersEmail,
+    )}&su=${encodedSubject}&body=${encodedBody}`,
+  };
+}
+
+function ApplyForJobLink({ roleTitle }: { roleTitle: string }) {
+  const links = getApplicationLinks(roleTitle);
+
+  function openApplicationEmail(event: MouseEvent<HTMLAnchorElement>) {
+    if (window.matchMedia("(min-width: 768px)").matches) {
+      event.preventDefault();
+      window.open(links.gmail, "_blank", "noopener,noreferrer");
+    }
+  }
+
+  return (
+    <a
+      href={links.mailto}
+      className={styles.applyButton}
+      onClick={openApplicationEmail}
+      aria-label={`Apply for the ${roleTitle} job by email`}
+    >
+      Apply for this job
+      <ArrowRight size={17} strokeWidth={1.8} aria-hidden="true" />
+    </a>
+  );
+}
 
 export function CareersPositions() {
   const [openRole, setOpenRole] = useState<string | null>(null);
@@ -58,55 +112,37 @@ export function CareersPositions() {
             >
               <div className={styles.roleDetailsInner}>
                 <div className={styles.roleAbout}>
-                  <p className={styles.detailLabel}>ABOUT THE ROLE</p>
+                  <p className={styles.detailLabel}>ROLE OVERVIEW</p>
                   <p>{role.about}</p>
                 </div>
 
                 <div className={styles.detailGrid}>
-                  {detailGroups.map((group) => {
-                    const items = role[group.key];
-
-                    return (
-                      <section key={group.key}>
-                        <h3>{group.title}</h3>
-                        {items.length > 0 ? (
-                          <ul>
-                            {items.map((item) => (
-                              <li key={item}>{item}</li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className={styles.pendingDetail}>
-                            To be confirmed in the client-approved role brief.
-                          </p>
-                        )}
-                      </section>
-                    );
-                  })}
+                  {detailGroups.map((group) => (
+                    <section key={group.key}>
+                      <h3>{group.title}</h3>
+                      <ul>
+                        {role[group.key].map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  ))}
                 </div>
 
                 <div className={styles.applyRow}>
                   <div>
                     <p className={styles.detailLabel}>HOW TO APPLY</p>
                     <p>
-                      Application instructions will be added once the approved
-                      destination is confirmed.
+                      Send your CV/resume to:{" "}
+                      <a
+                        className={styles.emailLink}
+                        href={`mailto:${careersEmail}`}
+                      >
+                        {careersEmail}
+                      </a>
                     </p>
                   </div>
-                  {role.applicationHref ? (
-                    <a href={role.applicationHref} className={styles.applyButton}>
-                      Apply for this role
-                      <ArrowRight size={17} strokeWidth={1.8} aria-hidden="true" />
-                    </a>
-                  ) : (
-                    <button
-                      type="button"
-                      className={styles.applyButton}
-                      disabled
-                    >
-                      Application link coming soon
-                    </button>
-                  )}
+                  <ApplyForJobLink roleTitle={role.title} />
                 </div>
               </div>
             </div>

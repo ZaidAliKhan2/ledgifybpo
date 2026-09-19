@@ -3,6 +3,7 @@ import { PageStructuredData } from "@/components/structured-data";
 import { ArrowDown } from "lucide-react";
 import { CareersPositions } from "@/components/careers-positions";
 import { SiteShell } from "@/components/site";
+import { careerRoles } from "@/lib/careers";
 import styles from "./careers-page.module.css";
 import entrance from "@/components/internal-hero-entrance.module.css";
 
@@ -46,11 +47,12 @@ export default function CareersPage() {
             <aside className={`${styles.heroPanel} ${entrance.visual}`} aria-label="Current opportunities">
               <div className={styles.openingCount}>
                 <p>CONFIRMED OPENINGS</p>
-                <strong>02</strong>
+                <strong>{String(careerRoles.length).padStart(2, "0")}</strong>
               </div>
               <div className={styles.openingNames}>
-                <p>Senior Accountant</p>
-                <p>Bookkeeping Intern</p>
+                {careerRoles.map((role) => (
+                  <p key={role.slug}>{role.title}</p>
+                ))}
               </div>
             </aside>
           </div>

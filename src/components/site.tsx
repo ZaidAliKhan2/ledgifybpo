@@ -5,11 +5,13 @@ import { usePathname } from "next/navigation";
 import {
   ArrowRight,
   ArrowDown,
-  Facebook,
-  Instagram,
-  Linkedin,
+  Check,
+  Mail,
+  MapPin,
+  Menu,
+  Phone,
+  X,
 } from "lucide-react";
-import { Menu, X, Check } from "lucide-react";
 import {
   createContext,
   useContext,
@@ -515,35 +517,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </Link>
 
               <p>Built for businesses ready to grow with confidence.</p>
-
-              <div className="mt-4 flex items-center gap-4">
-                {/* TODO: Replace # with the confirmed LinkedIn URL */}
-                <a
-                  href="#"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-gray-300 transition-colors hover:bg-white/15 hover:text-white"
-                  aria-label="LedgifyBPO on LinkedIn"
-                >
-                  <Linkedin size={20} aria-hidden="true" />
-                </a>
-
-                {/* TODO: Replace # with the confirmed Instagram URL */}
-                <a
-                  href="#"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-gray-300 transition-colors hover:bg-white/15 hover:text-white"
-                  aria-label="LedgifyBPO on Instagram"
-                >
-                  <Instagram size={20} aria-hidden="true" />
-                </a>
-
-                {/* TODO: Replace # with the confirmed Facebook URL */}
-                <a
-                  href="#"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10 text-gray-300 transition-colors hover:bg-white/15 hover:text-white"
-                  aria-label="LedgifyBPO on Facebook"
-                >
-                  <Facebook size={20} aria-hidden="true" />
-                </a>
-              </div>
             </div>
 
             {/* Block 2: Navigation */}
@@ -574,20 +547,17 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </button>
 
               <span className="contact-placeholder">
-                Email · info@ledgifybpo.com
+                <Mail size={14} strokeWidth={1.8} aria-hidden="true" />
+                info@ledgifybpo.com
               </span>
               <span className="contact-placeholder">
-                Phone · +92 332-7923093
+                <Phone size={14} strokeWidth={1.8} aria-hidden="true" />
+                +92 332-7923093
               </span>
-              <div className="footer-offices">
-                <div>
-                  <p className="footer-office-label">MAIN OFFICE</p>
-                  <span className="footer-office-location">Karachi, Pakistan</span>
-                </div>
-                <div>
-                  <p className="footer-office-label">BACK OFFICE</p>
-                </div>
-              </div>
+              <span className="contact-placeholder">
+                <MapPin size={14} strokeWidth={1.8} aria-hidden="true" />
+                US · Canada · Pakistan
+              </span>
             </div>
           </div>
 
@@ -677,14 +647,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   />
                 </label>
                 <label>
-                  Work email
+                  Email
                   <input
                     type="email"
                     name="email"
                     autoComplete="email"
                     required
                     maxLength={254}
-                    placeholder="you@company.com"
+                    placeholder="you@gmail.com"
                   />
                 </label>
               </div>
@@ -699,11 +669,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 />
               </label>
               <label>
-                Phone number <span className="optional">(optional)</span>
+                Phone number
                 <input
                   type="tel"
                   name="phone"
                   autoComplete="tel"
+                  required
                   maxLength={30}
                   placeholder="+1 555 123 4567"
                 />

@@ -328,14 +328,6 @@
   color: var(--accent);
 }
 
-.pendingDetail {
-  max-width: 240px;
-  margin-top: 10px;
-  color: var(--text-secondary);
-  font-size: 12px;
-  line-height: 1.65;
-}
-
 .applyRow {
   display: flex;
   align-items: center;
@@ -360,9 +352,12 @@
   font-weight: 500;
 }
 
-.applyButton:disabled {
-  background: color-mix(in srgb, var(--accent) 52%, var(--background));
-  cursor: not-allowed;
+.emailLink {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 @media (max-width: 900px) {
@@ -455,10 +450,6 @@
   .detailGrid {
     grid-template-columns: minmax(0, 1fr);
     gap: 26px;
-  }
-
-  .pendingDetail {
-    max-width: none;
   }
 
   .applyRow {
