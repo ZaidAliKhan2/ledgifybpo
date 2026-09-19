@@ -6,6 +6,7 @@ import { AboutFounders } from "@/components/about-founders";
 import { ConsultationButton, SiteShell } from "@/components/site";
 import { founders } from "@/lib/content";
 import styles from "./about-page.module.css";
+import entrance from "@/components/internal-hero-entrance.module.css";
 
 export const metadata = createPageMetadata("/about");
 
@@ -36,7 +37,7 @@ export default function AboutPage() {
         <PageStructuredData path="/about" />
         <section className={styles.hero} aria-labelledby="about-heading">
           <div className={`container ${styles.heroGrid}`}>
-            <div className={styles.heroCopy}>
+            <div className={`${styles.heroCopy} ${entrance.copy}`}>
               <p className="eyebrow">ABOUT LEDGIFYBPO</p>
               <h1 id="about-heading">
                 Built by people who believe business support should feel personal.
@@ -50,7 +51,7 @@ export default function AboutPage() {
               </a>
             </div>
 
-            <aside className={styles.heroVisual} aria-label="The thinking behind LedgifyBPO">
+            <aside className={`${styles.heroVisual} ${entrance.visual}`} aria-label="The thinking behind LedgifyBPO">
               <p className={styles.beliefLabel}>THE THINKING BEHIND LEDGIFYBPO</p>
               <p className={styles.beliefStatement}>
                 Behind every business,<br />

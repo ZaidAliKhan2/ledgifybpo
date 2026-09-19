@@ -35,6 +35,7 @@ import {
 import { ConsultationButton } from "@/components/site";
 import type { getServiceBySlug, ServiceSlug } from "@/lib/service-page-content";
 import styles from "./service-page.module.css";
+import entrance from "./internal-hero-entrance.module.css";
 
 type Service = ReturnType<typeof getServiceBySlug>;
 type PageContent = Service["page"];
@@ -235,7 +236,7 @@ function HeroVisual({ service }: { service: Service }) {
   };
 
   return (
-    <div className={styles.heroVisual} role="img" aria-label={service.page.hero.visualTitle}>
+    <div className={`${styles.heroVisual} ${entrance.visual}`} role="img" aria-label={service.page.hero.visualTitle}>
       <div aria-hidden="true">{visuals[service.slug]}</div>
     </div>
   );
@@ -247,7 +248,7 @@ export function ServiceHero({ service }: { service: Service }) {
   return (
     <section className={styles.hero} data-theme={service.slug}>
       <div className={`container ${styles.heroGrid}`}>
-        <div className={styles.heroCopy}>
+        <div className={`${styles.heroCopy} ${entrance.copy}`}>
           <Link href="/#services" className={styles.backLink}>
             <ArrowLeft size={15} aria-hidden="true" />
             All services

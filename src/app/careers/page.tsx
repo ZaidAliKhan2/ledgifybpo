@@ -4,6 +4,7 @@ import { ArrowDown } from "lucide-react";
 import { CareersPositions } from "@/components/careers-positions";
 import { SiteShell } from "@/components/site";
 import styles from "./careers-page.module.css";
+import entrance from "@/components/internal-hero-entrance.module.css";
 
 export const metadata = createPageMetadata("/careers");
 
@@ -29,7 +30,7 @@ export default function CareersPage() {
         <PageStructuredData path="/careers" />
         <section className={styles.hero} aria-labelledby="careers-heading">
           <div className={`container ${styles.heroGrid}`}>
-            <div className={styles.heroCopy}>
+            <div className={`${styles.heroCopy} ${entrance.copy}`}>
               <p className="eyebrow">CAREERS AT LEDGIFYBPO</p>
               <h1 id="careers-heading">Build your career with LedgifyBPO.</h1>
               <p>
@@ -42,7 +43,7 @@ export default function CareersPage() {
               </a>
             </div>
 
-            <aside className={styles.heroPanel} aria-label="Current opportunities">
+            <aside className={`${styles.heroPanel} ${entrance.visual}`} aria-label="Current opportunities">
               <div className={styles.openingCount}>
                 <p>CONFIRMED OPENINGS</p>
                 <strong>02</strong>

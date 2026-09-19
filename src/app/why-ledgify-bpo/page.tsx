@@ -19,6 +19,7 @@ import { ConsultationButton, SiteShell } from "@/components/site";
 import { founders, services } from "@/lib/content";
 import { servicePageContent } from "@/lib/service-page-content";
 import styles from "./why-page.module.css";
+import entrance from "@/components/internal-hero-entrance.module.css";
 
 export const metadata = createPageMetadata("/why-ledgify-bpo");
 
@@ -120,7 +121,7 @@ export default function WhyLedgifyBPOPage() {
         <PageStructuredData path="/why-ledgify-bpo" />
         <section className={styles.hero} aria-labelledby="why-heading">
           <div className={`container ${styles.heroGrid}`}>
-            <div className={styles.heroCopy}>
+            <div className={`${styles.heroCopy} ${entrance.copy}`}>
               <p className="eyebrow">WHY LEDGIFYBPO</p>
               <h1 id="why-heading">More support.<br />More room to lead.</h1>
               <p className={styles.intro}>
@@ -137,7 +138,7 @@ export default function WhyLedgifyBPOPage() {
             </div>
 
             <div
-              className={styles.partnership}
+              className={`${styles.partnership} ${entrance.visual}`}
               role="img"
               aria-label="Your team leads on customers, people, and decisions. LedgifyBPO supports bookkeeping, accounting and reporting, tax, advisory, and HR through shared priorities and clear responsibilities."
             >

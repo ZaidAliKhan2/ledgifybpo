@@ -504,13 +504,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
         )}
       </header>
-      {pathname === "/" ? (
-        children
-      ) : (
-        <div key={pathname} className="route-content-enter">
-          {children}
-        </div>
-      )}
+      {children}
       <footer className="site-footer">
         <div className="container">
           <div className="footer-grid">
