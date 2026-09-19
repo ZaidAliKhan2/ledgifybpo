@@ -32,7 +32,7 @@ const navigationItems = [
   },
   {
     label: "Industries",
-    href: "/#industries",
+    href: "/industries",
     activePath: "/industries",
     includeDescendants: false,
   },
@@ -75,6 +75,7 @@ type ConsultationPayload = {
   name: string;
   email: string;
   company: string;
+  phone: string;
   services: string;
   message: string;
   _gotcha: string;
@@ -187,6 +188,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
       name: read("name").trim(),
       email: read("email").trim(),
       company: read("company").trim(),
+      phone: read("phone").trim(),
       services: serviceSummary,
       message: read("message").trim(),
       _gotcha: read("_gotcha"),
@@ -502,7 +504,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
         )}
       </header>
-      {children}
+      {pathname === "/" ? (
+        children
+      ) : (
+        <div key={pathname} className="route-content-enter">
+          {children}
+        </div>
+      )}
       <footer className="site-footer">
         <div className="container">
           <div className="footer-grid">
@@ -694,6 +702,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
                   required
                   maxLength={160}
                   placeholder="Company name"
+                />
+              </label>
+              <label>
+                Phone number <span className="optional">(optional)</span>
+                <input
+                  type="tel"
+                  name="phone"
+                  autoComplete="tel"
+                  maxLength={30}
+                  placeholder="+1 555 123 4567"
                 />
               </label>
               <fieldset

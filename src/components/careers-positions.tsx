@@ -19,7 +19,7 @@ export function CareersPositions() {
 
   return (
     <div className={styles.positionsList}>
-      {careerRoles.map((role, index) => {
+      {careerRoles.map((role) => {
         const isOpen = openRole === role.slug;
         const triggerId = `${role.slug}-trigger`;
         const panelId = `${role.slug}-details`;
@@ -38,9 +38,6 @@ export function CareersPositions() {
               aria-controls={panelId}
               onClick={() => setOpenRole(isOpen ? null : role.slug)}
             >
-              <span className={styles.roleIndex} aria-hidden="true">
-                {String(index + 1).padStart(2, "0")}
-              </span>
               <span className={styles.roleHeading}>
                 <strong>{role.title}</strong>
                 <span>{role.summary}</span>

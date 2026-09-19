@@ -22,7 +22,7 @@ export const publicPages = [
   })),
   { path: "/industries", title: "Industries", description: "Accounting and back-office support shaped around the way your industry operates." },
   { path: "/why-ledgify-bpo", title: "Why Choose LedgifyBPO", description: "See how LedgifyBPO extends your team with bookkeeping, accounting, tax coordination, financial advisory, and HR support built around your operation." },
-  { path: "/about", title: "About the Founders", description: "Meet Naveed and Saud, the co-founders of LedgifyBPO, and learn about the principles behind the company they are building." },
+  { path: "/about", title: "About the Founders", description: "Meet Saud and Naveed, the co-founders of LedgifyBPO, and learn about the principles behind the company they are building." },
   { path: "/careers", title: "Careers", description: "Explore current career opportunities with LedgifyBPO in accounting and bookkeeping." },
 ];
 

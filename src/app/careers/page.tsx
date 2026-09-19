@@ -9,17 +9,14 @@ export const metadata = createPageMetadata("/careers");
 
 const reasons = [
   {
-    number: "01",
     title: "Learn through real work",
     copy: "Build experience through practical accounting and business operations work.",
   },
   {
-    number: "02",
     title: "Use modern tools",
     copy: "Develop familiarity with the tools and workflows used by today's finance teams.",
   },
   {
-    number: "03",
     title: "Grow with the team",
     copy: "Contribute as LedgifyBPO expands its accounting and business operations support.",
   },
@@ -66,8 +63,7 @@ export default function CareersPage() {
             </header>
             <div className={styles.reasonGrid}>
               {reasons.map((reason) => (
-                <article key={reason.number} className={styles.reason}>
-                  <span aria-hidden="true">{reason.number}</span>
+                <article key={reason.title} className={styles.reason}>
                   <h3>{reason.title}</h3>
                   <p>{reason.copy}</p>
                 </article>

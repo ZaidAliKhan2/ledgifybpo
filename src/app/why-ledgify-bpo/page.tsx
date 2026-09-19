@@ -237,9 +237,8 @@ export default function WhyLedgifyBPOPage() {
           <div className="container">
             <SectionHeading eyebrow="WORKING TOGETHER" title="A clear start. A connected way of working." id="process-heading" />
             <ol className={styles.steps}>
-              {steps.map((step, index) => (
+              {steps.map((step) => (
                 <li key={step.title}>
-                  <span className={styles.stepNumber}>0{index + 1}</span>
                   <h3>{step.title}</h3>
                   <p>{step.copy}</p>
                 </li>

@@ -288,7 +288,6 @@ export function ServiceCapabilities({ service }: { service: Service }) {
             <article key={item.title}>
               <div className={styles.capabilityTopline}>
                 <span className={styles.iconTile}><ThemeIcon theme={service.slug} index={index} /></span>
-                <span>0{index + 1}</span>
               </div>
               <h3>{item.title}</h3><p>{item.copy}</p>
             </article>
@@ -310,7 +309,6 @@ export function ServiceProcess({ content, theme }: { content: PageContent["proce
         <ol className={styles.processSteps}>
           {content.steps.map((step, index) => (
             <li key={step.title}>
-              <span className={styles.stepNumber}>0{index + 1}</span>
               <span className={styles.stepIcon}><ThemeIcon theme={theme} index={index + 1} size={18} /></span>
               <div><h3>{step.title}</h3><p>{step.copy}</p></div>
             </li>

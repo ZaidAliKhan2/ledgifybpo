@@ -11,19 +11,16 @@ export const metadata = createPageMetadata("/about");
 
 const principles = [
   {
-    number: "01",
     Icon: MessagesSquare,
     title: "Clarity over complexity",
     copy: "Make the work, the questions, and the next step easy to understand.",
   },
   {
-    number: "02",
     Icon: Handshake,
     title: "Work that earns trust",
     copy: "Build confidence through care, consistency, and honest communication.",
   },
   {
-    number: "03",
     Icon: Compass,
     title: "Support that fits",
     copy: "Start with the business in front of us—not a one-size-fits-all playbook.",
@@ -45,7 +42,7 @@ export default function AboutPage() {
                 Built by people who believe business support should feel personal.
               </h1>
               <p className={styles.heroIntro}>
-                Meet Naveed and Saud—the founders shaping a more thoughtful,
+                Meet Saud and Naveed—the founders shaping a more thoughtful,
                 connected way to support growing businesses.
               </p>
               <a href="#our-vision" className={styles.storyLink}>
@@ -65,7 +62,7 @@ export default function AboutPage() {
               </p>
               <div className={styles.beliefSignature}>
                 <span aria-hidden="true" />
-                <p>Naveed &amp; Saud<small>Founders, LedgifyBPO</small></p>
+                <p>Saud &amp; Naveed<small>Founders, LedgifyBPO</small></p>
               </div>
             </aside>
           </div>
@@ -79,46 +76,9 @@ export default function AboutPage() {
           <div className="container">
             <article
               className={styles.founderVision}
-              aria-labelledby="naveed-vision-heading"
-            >
-              <div className={styles.visionPortrait}>
-                <span className={styles.visionIndex} aria-hidden="true">01</span>
-                <div className={styles.visionHalo} aria-hidden="true" />
-                <Image
-                  src="/images/founder-1-name.png"
-                  alt={`${naveedFounder.name}, ${naveedFounder.role} of LedgifyBPO`}
-                  fill
-                  sizes="(max-width: 900px) 78vw, 440px"
-                  className={styles.visionPortraitImage}
-                />
-              </div>
-              <div className={styles.visionCopy}>
-                <p className="eyebrow">NAVEED&apos;S VISION</p>
-                <h2 id="naveed-vision-heading">
-                  Support should begin with understanding the business behind the work.
-                </h2>
-                <p className={styles.visionStatement}>
-                  Naveed&apos;s vision for LedgifyBPO starts with a simple standard:
-                  listen carefully, understand what the team needs, and shape
-                  support around that context.
-                </p>
-                <p>
-                  The goal is a working relationship that feels close, clear,
-                  and genuinely useful to the people leading the business.
-                </p>
-                <div className={styles.signature}>
-                  <span>{naveedFounder.name}</span>
-                  <small>{naveedFounder.role}</small>
-                </div>
-              </div>
-            </article>
-
-            <article
-              className={`${styles.founderVision} ${styles.founderVisionReverse}`}
               aria-labelledby="saud-vision-heading"
             >
               <div className={styles.visionPortrait}>
-                <span className={styles.visionIndex} aria-hidden="true">02</span>
                 <div className={styles.visionHalo} aria-hidden="true" />
                 <Image
                   src="/images/founder-2-name.png"
@@ -148,6 +108,41 @@ export default function AboutPage() {
                 </div>
               </div>
             </article>
+
+            <article
+              className={`${styles.founderVision} ${styles.founderVisionReverse}`}
+              aria-labelledby="naveed-vision-heading"
+            >
+              <div className={styles.visionPortrait}>
+                <div className={styles.visionHalo} aria-hidden="true" />
+                <Image
+                  src="/images/founder-1-name.png"
+                  alt={`${naveedFounder.name}, ${naveedFounder.role} of LedgifyBPO`}
+                  fill
+                  sizes="(max-width: 900px) 78vw, 440px"
+                  className={styles.visionPortraitImage}
+                />
+              </div>
+              <div className={styles.visionCopy}>
+                <p className="eyebrow">NAVEED&apos;S VISION</p>
+                <h2 id="naveed-vision-heading">
+                  Support should begin with understanding the business behind the work.
+                </h2>
+                <p className={styles.visionStatement}>
+                  Naveed&apos;s vision for LedgifyBPO starts with a simple standard:
+                  listen carefully, understand what the team needs, and shape
+                  support around that context.
+                </p>
+                <p>
+                  The goal is a working relationship that feels close, clear,
+                  and genuinely useful to the people leading the business.
+                </p>
+                <div className={styles.signature}>
+                  <span>{naveedFounder.name}</span>
+                  <small>{naveedFounder.role}</small>
+                </div>
+              </div>
+            </article>
           </div>
         </section>
 
@@ -173,15 +168,14 @@ export default function AboutPage() {
                 <h2 id="guides-heading">The standard behind the work.</h2>
               </div>
               <p>
-                What Naveed and Saud believe good business support should look like.
+                What Saud and Naveed believe good business support should look like.
               </p>
             </div>
             <div className={styles.principleGrid}>
-              {principles.map(({ number, Icon, title, copy }) => (
+              {principles.map(({ Icon, title, copy }) => (
                 <article key={title} className={styles.principle}>
                   <div className={styles.principleTop}>
                     <Icon size={22} strokeWidth={1.5} aria-hidden="true" />
-                    <span>{number}</span>
                   </div>
                   <h3>{title}</h3>
                   <p>{copy}</p>

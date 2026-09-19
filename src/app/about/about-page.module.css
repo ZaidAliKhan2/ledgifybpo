@@ -164,17 +164,6 @@
   inset: 29%;
 }
 
-.visionIndex {
-  position: absolute;
-  top: 45px;
-  left: 47px;
-  z-index: 2;
-  color: var(--accent);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-}
-
 .visionPortraitImage {
   z-index: 1;
   object-fit: contain;
@@ -267,19 +256,19 @@
   height: 310px;
   transition: transform 700ms var(--motion);
 }
-.founderGroup[data-founder="naveed"] {
+.founderGroup[data-founder="saud"] {
   transform: translateX(calc(50cqw - var(--card-width) - var(--card-gap) / 2));
 }
-.founderGroup[data-founder="saud"] {
+.founderGroup[data-founder="naveed"] {
   transform: translateX(calc(50cqw + var(--card-gap) / 2));
 }
-.founderExperience:not([data-state="idle"]) .founderGroup[data-founder="naveed"] {
+.founderExperience:not([data-state="idle"]) .founderGroup[data-founder="saud"] {
   transform: translateX(0);
 }
-.founderExperience[data-state="naveed"] .founderGroup[data-founder="saud"] {
+.founderExperience[data-state="saud"] .founderGroup[data-founder="naveed"] {
   transform: translateX(calc(100cqw - var(--card-width)));
 }
-.founderExperience[data-state="saud"] .founderGroup[data-founder="saud"] {
+.founderExperience[data-state="naveed"] .founderGroup[data-founder="naveed"] {
   transform: translateX(calc(var(--card-width) + var(--card-gap)));
 }
 .founderCard {
@@ -446,15 +435,7 @@
 .principleTop {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   color: var(--accent);
-}
-
-.principleTop span {
-  color: color-mix(in srgb, var(--anchor-dark) 35%, transparent);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
 }
 
 .principle h3 {
@@ -592,11 +573,6 @@
     inset: 18px;
   }
 
-  .visionIndex {
-    top: 33px;
-    left: 35px;
-  }
-
   .principle {
     padding-inline: 12px;
   }
@@ -623,8 +599,8 @@
   .founderExperience:not([data-state="idle"]) { grid-template-rows: auto 1fr; }
   .founderExperience .founderGroup { display: contents; }
   .founderCard { grid-row: 1; height: 300px; }
-  .founderGroup[data-founder="naveed"] .founderCard { grid-column: 1; }
-  .founderGroup[data-founder="saud"] .founderCard { grid-column: 2; }
+  .founderGroup[data-founder="saud"] .founderCard { grid-column: 1; }
+  .founderGroup[data-founder="naveed"] .founderCard { grid-column: 2; }
   .founderGroup[data-active="true"] .founderCard {
     border-radius: 12px;
     border-right-color: color-mix(in srgb, var(--accent) 28%, var(--border));

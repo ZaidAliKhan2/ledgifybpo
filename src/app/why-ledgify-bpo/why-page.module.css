@@ -212,9 +212,14 @@
   color: var(--accent);
 }
 
-.reasonGrid h3,
-.steps h3 {
+.reasonGrid h3 {
   margin-top: 17px;
+  font-size: 17px;
+  letter-spacing: -.4px;
+  line-height: 1.4;
+}
+
+.steps h3 {
   font-size: 17px;
   letter-spacing: -.4px;
   line-height: 1.4;
@@ -375,18 +380,6 @@
   border-top: 1px solid #d8d1eb;
 }
 
-.stepNumber {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border: 1px solid #e3def4;
-  border-radius: 11px;
-  color: var(--accent);
-  background: #f2effa;
-  font-size: 12px;
-}
-
 .tools {
   padding-block: 49px;
   border-block: 1px solid var(--why-line);
@@ -545,9 +538,6 @@
   .comparisonGrid li { min-height: 0; padding-block: 16px; }
   .comparisonNote { text-align: left; }
   .steps { grid-template-columns: minmax(0, 1fr); gap: 21px; }
-  .steps li { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 0 16px; }
-  .stepNumber { grid-row: span 2; }
-  .steps h3 { margin-top: 0; }
   .steps p { margin-top: 7px; }
   .toolsGrid, .proofGrid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
   .toolList { grid-template-columns: repeat(3, minmax(0, 1fr)); }

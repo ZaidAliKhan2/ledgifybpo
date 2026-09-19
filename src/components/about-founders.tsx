@@ -6,7 +6,7 @@ import styles from "@/app/about/about-page.module.css";
 import { founders } from "@/lib/content";
 
 type FounderId = (typeof founders)[number]["id"];
-const aboutFounders = [founders[1], founders[0]] as const;
+const aboutFounders = founders;
 
 export function AboutFounders() {
   const [selectedId, setSelectedId] = useState<FounderId | null>(null);

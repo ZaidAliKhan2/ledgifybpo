@@ -95,7 +95,7 @@ export default function IndustriesPage() {
             </header>
 
             <div className={styles.directory}>
-              {industries.map((industry, index) => (
+              {industries.map((industry) => (
                 <Link
                   href={`#${industry.slug}`}
                   className={styles.directoryCard}
@@ -112,7 +112,6 @@ export default function IndustriesPage() {
                       />
                     </div>
                     <div className={styles.directoryCopy}>
-                      <span>{String(index + 1).padStart(2, "0")}</span>
                       <h3>{industry.name}</h3>
                       <p>{industry.description}</p>
                       <strong>See how we help <ArrowRight size={14} aria-hidden="true" /></strong>
