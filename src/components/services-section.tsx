@@ -217,7 +217,6 @@ export function ServicesSection({ scrollMotion = false }: { scrollMotion?: boole
               renderTabSet(setIndex, setIndex !== primaryServiceSet),
             )}
           </div>
-          <p className={styles.mobileHint}><Repeat2 size={13} aria-hidden="true" /> Five services · continuous loop</p>
         </div>
         <div className={styles.brief} id="service-brief" role="tabpanel" tabIndex={0}
           aria-labelledby={`service-tab-${displayed}`} aria-busy={phase === "exiting"} data-phase={phase} data-service={service.slug}>
